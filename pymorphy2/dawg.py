@@ -43,7 +43,7 @@ class PredictionSuffixesDAWG(WordsDawg):
     # We are storing 3 unsigned short ints as values:
     # count, the paradigm ID and the form index (inside paradigm).
     # Byte order is big-endian (this makes word forms properly sorted).
-    DATA_FORMAT = str(">HHH")
+    DATA_FORMAT = str(">IHH")
 
 
 class ConditionalProbDistDAWG(IntCompletionDAWG):
