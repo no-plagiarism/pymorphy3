@@ -12,16 +12,16 @@ from __future__ import absolute_import, unicode_literals, division
 
 import operator
 
-from pymorphy2.units.base import AnalogyAnalizerUnit
-from pymorphy2.units.by_lookup import DictionaryAnalyzer
-from pymorphy2.units.utils import (
+from pymorphy3.units.base import AnalogyAnalizerUnit
+from pymorphy3.units.by_lookup import DictionaryAnalyzer
+from pymorphy3.units.utils import (
     add_parse_if_not_seen,
     add_tag_if_not_seen,
     without_fixed_prefix,
     with_prefix
 )
-from pymorphy2.utils import word_splits
-from pymorphy2.dawg import PrefixMatcher
+from pymorphy3.utils import word_splits
+from pymorphy3.dawg import PrefixMatcher
 
 _cnt_getter = operator.itemgetter(3)
 

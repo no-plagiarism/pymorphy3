@@ -2,11 +2,11 @@
 from __future__ import absolute_import, unicode_literals
 import pickle
 import pytest
-import pymorphy2
-from pymorphy2.units.by_lookup import DictionaryAnalyzer
-from pymorphy2.units.by_analogy import UnknownPrefixAnalyzer, KnownPrefixAnalyzer
-from pymorphy2.units.by_hyphen import HyphenatedWordsAnalyzer
-from pymorphy2 import lang
+import pymorphy3
+from pymorphy3.units.by_lookup import DictionaryAnalyzer
+from pymorphy3.units.by_analogy import UnknownPrefixAnalyzer, KnownPrefixAnalyzer
+from pymorphy3.units.by_hyphen import HyphenatedWordsAnalyzer
+from pymorphy3 import lang
 
 
 # TODO: move most of tests to test_parsing
@@ -246,7 +246,7 @@ class TestParseResultClass:
         # self.assertNotTuples(morph.decline('кот'))
 
     def test_plain_tuples(self):
-        morph_plain = pymorphy2.MorphAnalyzer(result_type=None)
+        morph_plain = pymorphy3.MorphAnalyzer(result_type=None)
         self.assertAllTuples(morph_plain.parse('кот'))
         # self.assertAllTuples(morph_plain.inflect('кот', set(['plur'])))
         # self.assertAllTuples(morph_plain.decline('кот'))

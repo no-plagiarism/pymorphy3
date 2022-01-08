@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pymorphy2 documentation build configuration file, created by
+# pymorphy3 documentation build configuration file, created by
 # sphinx-quickstart on Sun Jul 29 04:34:30 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Морфологический анализатор pymorphy2'
+project = 'Морфологический анализатор pymorphy3'
 copyright = '2013-2020, Mikhail Korobov'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -112,10 +112,10 @@ html_theme = 'sphinx_rtd_theme'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "Морфологический анализатор pymorphy2"
+html_title = "Морфологический анализатор pymorphy3"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = u'pymorphy2'
+#html_short_title = u'pymorphy3'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -192,7 +192,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pymorphy2.tex', 'pymorphy2 Documentation',
+  ('index', 'pymorphy3.tex', 'pymorphy3 Documentation',
    'Mikhail Korobov', 'manual'),
 ]
 
@@ -222,7 +222,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pymorphy2', 'pymorphy2 Documentation',
+    ('index', 'pymorphy3', 'pymorphy3 Documentation',
      ['Mikhail Korobov'], 1)
 ]
 
@@ -236,8 +236,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'pymorphy2', 'pymorphy2 Documentation',
-   'Mikhail Korobov', 'pymorphy2', 'One line description of project.',
+  ('index', 'pymorphy3', 'pymorphy3 Documentation',
+   'Mikhail Korobov', 'pymorphy3', 'One line description of project.',
    'Miscellaneous'),
 ]
 

@@ -8,9 +8,9 @@ import threading
 import operator
 import warnings
 
-from pymorphy2 import opencorpora_dict
-from pymorphy2.dawg import ConditionalProbDistDAWG
-import pymorphy2.lang
+from pymorphy3 import opencorpora_dict
+from pymorphy3.dawg import ConditionalProbDistDAWG
+import pymorphy3.lang
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class Parse(_Parse):
     """ :type _morph: MorphAnalyzer """
 
     _dict = None
-    """ :type _dict: pymorphy2.opencorpora_dict.Dictionary """
+    """ :type _dict: pymorphy3.opencorpora_dict.Dictionary """
 
     def inflect(self, required_grammemes):
         res = self._morph._inflect(self, required_grammemes)
@@ -107,7 +107,7 @@ def _iter_entry_points(*args, **kwargs):
     are picked up, even if a package which provides them is installed
     after the current process is started.
 
-    The main use case is to make ``!pip install pymorphy2`` work
+    The main use case is to make ``!pip install pymorphy3`` work
     within a Jupyter or Google Colab notebook.
     See https://github.com/kmike/pymorphy2/issues/131
     """
@@ -122,7 +122,7 @@ def _lang_dict_paths():
         for pkg in _iter_entry_points('pymorphy2_dicts')
     )
 
-    # discovery of pymorphy2 v0.8 dicts
+    # discovery of pymorphy3 v0.8 dicts
     try:
         import pymorphy2_dicts
         paths['ru-old'] = pymorphy2_dicts.get_path()
@@ -140,7 +140,7 @@ def lang_dict_path(lang):
 
     raise ValueError(
         "Can't find a dictionary for language %r. Installed languages: %r. "
-        "Try installing pymorphy2-dicts-%s package." % (
+        "Try installing pymorphy3-dicts-%s package." % (
             lang, list(lang_paths.keys()), lang
         )
     )
@@ -159,8 +159,8 @@ class MorphAnalyzer(object):
 
     Create a :class:`MorphAnalyzer` object::
 
-        >>> import pymorphy2
-        >>> morph = pymorphy2.MorphAnalyzer()
+        >>> import pymorphy3
+        >>> morph = pymorphy3.MorphAnalyzer()
 
     MorphAnalyzer uses dictionaries from ``pymorphy2-dicts`` package
     (which can be installed via ``pip install pymorphy2-dicts``).
@@ -170,19 +170,19 @@ class MorphAnalyzer(object):
     with a path to dictionaries, or pass ``path`` argument
     to :class:`pymorphy2.MorphAnalyzer` constructor::
 
-        >>> morph = pymorphy2.MorphAnalyzer(path='/path/to/dictionaries') # doctest: +SKIP
+        >>> morph = pymorphy3.MorphAnalyzer(path='/path/to/dictionaries') # doctest: +SKIP
 
     By default, methods of this class return parsing results
     as namedtuples :class:`Parse`. This has performance implications
     under CPython, so if you need maximum speed then pass
     ``result_type=None`` to make analyzer return plain unwrapped tuples::
 
-        >>> morph = pymorphy2.MorphAnalyzer(result_type=None)
+        >>> morph = pymorphy3.MorphAnalyzer(result_type=None)
 
     """
     DICT_PATH_ENV_VARIABLE = 'PYMORPHY2_DICT_PATH'
-    DEFAULT_UNITS = pymorphy2.lang.ru.DEFAULT_UNITS
-    DEFAULT_SUBSTITUTES = pymorphy2.lang.ru.CHAR_SUBSTITUTES
+    DEFAULT_UNITS = pymorphy3.lang.ru.DEFAULT_UNITS
+    DEFAULT_SUBSTITUTES = pymorphy3.lang.ru.CHAR_SUBSTITUTES
     char_substitutes = None
 
     _lock = threading.RLock()
@@ -251,10 +251,10 @@ class MorphAnalyzer(object):
         assert self.lang is not None
         aliases = {'ru-old': 'ru'}
         lang = aliases.get(self.lang, self.lang)
-        if not hasattr(pymorphy2.lang, lang):
+        if not hasattr(pymorphy3.lang, lang):
             warnings.warn("unknown language code: %r" % lang)
             return None
-        return getattr(pymorphy2.lang, lang)
+        return getattr(pymorphy3.lang, lang)
 
     def _config_value(self, key, default):
         config = self._lang_default_config()
@@ -283,7 +283,7 @@ class MorphAnalyzer(object):
     def choose_language(cls, dictionary, lang):
         if lang is None:
             if dictionary.lang is None:
-                # this could be e.g. old pymorphy2 dictionary
+                # this could be e.g. old pymorphy3 dictionary
                 warnings.warn("Dictionary doesn't declare its language; "
                               "assuming 'ru'")
                 return 'ru'
@@ -300,7 +300,7 @@ class MorphAnalyzer(object):
 
     def parse(self, word):
         """
-        Analyze the word and return a list of :class:`pymorphy2.analyzer.Parse`
+        Analyze the word and return a list of :class:`pymorphy3.analyzer.Parse`
         namedtuples:
 
             Parse(word, tag, normal_form, para_id, idx, _score)
@@ -427,7 +427,7 @@ class MorphAnalyzer(object):
     @property
     def TagClass(self):
         """
-        :rtype: pymorphy2.tagset.OpencorporaTag
+        :rtype: pymorphy3.tagset.OpencorporaTag
         """
         return self.dictionary.Tag
 

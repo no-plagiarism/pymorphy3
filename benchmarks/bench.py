@@ -21,16 +21,16 @@ from docopt import docopt
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import pymorphy2
+import pymorphy3
 from benchmarks import speed
 
-logger = logging.getLogger('pymorphy2.bench')
+logger = logging.getLogger('pymorphy3.bench')
 logger.addHandler(logging.StreamHandler())
 
 
 def main():
     """ CLI interface dispatcher """
-    args = docopt(__doc__, version=pymorphy2.__version__)
+    args = docopt(__doc__, version=pymorphy3.__version__)
 
     if args['--verbose']:
         logger.setLevel(logging.DEBUG)

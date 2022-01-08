@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-from pymorphy2.units.base import BaseAnalyzerUnit
+from pymorphy3.units.base import BaseAnalyzerUnit
 
 
 class UnknAnalyzer(BaseAnalyzerUnit):

@@ -9,11 +9,11 @@ packages for probability estimation and resulting file creation.
 from __future__ import absolute_import
 import os
 import logging
-from pymorphy2 import MorphAnalyzer
-from pymorphy2.opencorpora_dict.preprocess import tag2grammemes
-from pymorphy2.dawg import ConditionalProbDistDAWG
-from pymorphy2.opencorpora_dict.storage import update_meta
-from pymorphy2.utils import with_progress
+from pymorphy3 import MorphAnalyzer
+from pymorphy3.opencorpora_dict.preprocess import tag2grammemes
+from pymorphy3.dawg import ConditionalProbDistDAWG
+from pymorphy3.opencorpora_dict.storage import update_meta
+from pymorphy3.utils import with_progress
 
 
 def add_conditional_tag_probability(corpus_filename, out_path, min_word_freq,

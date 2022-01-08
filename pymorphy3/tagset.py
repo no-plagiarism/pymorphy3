@@ -70,7 +70,7 @@ class OpencorporaTag(object):
 
     Example::
 
-        >>> from pymorphy2 import MorphAnalyzer
+        >>> from pymorphy3 import MorphAnalyzer
         >>> morph = MorphAnalyzer()
         >>> Tag = morph.TagClass  # get an initialzed Tag class
         >>> tag = Tag('VERB,perf,tran plur,impr,excl')
@@ -266,7 +266,7 @@ class OpencorporaTag(object):
         self._str = tag
         # XXX: we loose information about which grammemes
         # belongs to lexeme and which belongs to form
-        # (but this information seems useless for pymorphy2).
+        # (but this information seems useless for pymorphy3).
 
         # Hacks for better memory usage:
         # - store grammemes in a tuple and build a set only when needed;

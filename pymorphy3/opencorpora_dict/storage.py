@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`pymorphy2.opencorpora_dict.storage` is a
-module for saving and loading pymorphy2 dictionaries.
+:mod:`pymorphy3.opencorpora_dict.storage` is a
+module for saving and loading pymorphy3 dictionaries.
 """
 from __future__ import absolute_import, unicode_literals
 import datetime
@@ -17,10 +17,10 @@ try:
 except AttributeError:
     izip = zip
 
-import pymorphy2
-from pymorphy2 import tagset
-from pymorphy2 import dawg
-from pymorphy2.utils import json_write, json_read
+import pymorphy3
+from pymorphy3 import tagset
+from pymorphy3 import dawg
+from pymorphy3.utils import json_write, json_read
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ LoadedDictionary = collections.namedtuple('LoadedDictionary', [
 
 def load_dict(path, gramtab_format='opencorpora-int'):
     """
-    Load pymorphy2 dictionary.
+    Load pymorphy3 dictionary.
     ``path`` is a folder name with dictionary data.
     """
 
@@ -130,7 +130,7 @@ def save_compiled_dict(compiled_dict, out_path, source_name, language_code):
     write_meta(_f('meta.json'), [
         ['language_code', language_code],
         ['format_version', CURRENT_FORMAT_VERSION],
-        ['pymorphy2_version', pymorphy2.__version__],
+        ['pymorphy2_version', pymorphy3.__version__],
         ['compiled_at', datetime.datetime.utcnow().isoformat()],
 
         ['source', source_name],

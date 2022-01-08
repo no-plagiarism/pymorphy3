@@ -4,8 +4,8 @@ import pytest
 
 @pytest.fixture(scope='session')
 def morph():
-    import pymorphy2
-    return pymorphy2.MorphAnalyzer()
+    import pymorphy3
+    return pymorphy3.MorphAnalyzer()
 
 
 @pytest.fixture(scope='session')

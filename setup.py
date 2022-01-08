@@ -2,11 +2,10 @@
 import sys
 import platform
 from setuptools import setup
-# from Cython.Build import cythonize
 
 
 def get_version():
-    with open("pymorphy2/version.py", "rt") as f:
+    with open("pymorphy3/version.py", "rt") as f:
         return f.readline().split("=")[1].strip(' "\n')
 
 
@@ -30,7 +29,6 @@ py_version = sys.version_info[:2]
 
 install_requires = [
     'dawg-python >= 0.7.1',
-    'pymorphy2-dicts-ru >=2.4, <3.0',
     'docopt >= 0.6',
 ]
 if py_version < (3, 0):
@@ -46,36 +44,30 @@ if is_cpython:
 
 
 setup(
-    name='pymorphy2',
+    name='pymorphy3',
     version=get_version(),
-    author='Mikhail Korobov',
-    author_email='kmike84@gmail.com',
-    url='https://github.com/kmike/pymorphy2/',
+    author='Danylo Halaiko',
+    author_email='d9nich@pm.me',
+    url='https://github.com/no-plagiarism/pymorphy3',
 
     description='Morphological analyzer (POS tagger + inflection engine) for Russian language.',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
 
     license='MIT license',
     packages=[
-        'pymorphy2',
-        'pymorphy2.units',
-        'pymorphy2.lang',
-        'pymorphy2.lang.ru',
-        'pymorphy2.lang.uk',
-        'pymorphy2.opencorpora_dict',
+        'pymorphy3',
+        'pymorphy3.units',
+        'pymorphy3.lang',
+        'pymorphy3.lang.ru',
+        'pymorphy3.lang.uk',
+        'pymorphy3.opencorpora_dict',
     ],
     entry_points={
-        'console_scripts': ['pymorphy = pymorphy2.cli:main']
+        'console_scripts': ['pymorphy = pymorphy3.cli:main']
     },
     install_requires=install_requires,
     extras_require=extras_require,
     zip_safe=False,
-
-    # ext_modules=cythonize([
-    #     'pymorphy2/*.py',
-    #     'pymorphy2/units/*.py',
-    #     'pymorphy2/opencorpora_dict/*.py',
-    # ], annotate=True, profile=True),
 
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -84,8 +76,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: Russian',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',

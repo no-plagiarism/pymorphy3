@@ -1,9 +1,9 @@
-include AUTHORS.rst
-include README.rst
+include README.md
 include CHANGES.rst
 include docs/Makefile
 include docs/make.bat
 include docs/conf.py
+include LICENSE.txt
 
 recursive-include docs *.rst
 recursive-include benchmarks *.py

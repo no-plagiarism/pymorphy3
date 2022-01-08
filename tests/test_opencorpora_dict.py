@@ -4,14 +4,14 @@ import os
 
 import pytest
 
-import pymorphy2
-from pymorphy2.opencorpora_dict.compile import (
+import pymorphy3
+from pymorphy3.opencorpora_dict.compile import (
     _to_paradigm,
     convert_to_pymorphy2
 )
-from pymorphy2.opencorpora_dict.parse import parse_opencorpora_xml
-from pymorphy2.dawg import assert_can_create
-from pymorphy2 import lang
+from pymorphy3.opencorpora_dict.parse import parse_opencorpora_xml
+from pymorphy3.dawg import assert_can_create
+from pymorphy3 import lang
 
 
 class TestToyDictionary:
@@ -43,7 +43,7 @@ class TestToyDictionary:
     def test_convert_to_pymorphy2(self, tmpdir):
 
         # import logging
-        # from pymorphy2.opencorpora_dict.compile import logger
+        # from pymorphy3.opencorpora_dict.compile import logger
         # logger.setLevel(logging.DEBUG)
         # logger.addHandler(logging.StreamHandler())
 
@@ -64,7 +64,7 @@ class TestToyDictionary:
                              overwrite=True, compile_options=options)
 
         # use it
-        morph = pymorphy2.MorphAnalyzer(out_path)
+        morph = pymorphy3.MorphAnalyzer(out_path)
         assert morph.tag('ёжиться') == [morph.TagClass('INFN,impf,intr')]
 
         # tag simplification should work

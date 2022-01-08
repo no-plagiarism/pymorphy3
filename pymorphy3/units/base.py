@@ -2,8 +2,8 @@
 from __future__ import absolute_import, unicode_literals, division
 import inspect
 
-from pymorphy2.utils import kwargs_repr
-from pymorphy2.units.utils import (
+from pymorphy3.utils import kwargs_repr
+from pymorphy3.units.utils import (
     without_last_method,
     append_method,
     add_tag_if_not_seen,

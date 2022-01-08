@@ -6,8 +6,8 @@ Analyzer units that analyzes non-word tokes
 
 from __future__ import absolute_import, unicode_literals, division
 
-from pymorphy2.units.base import BaseAnalyzerUnit
-from pymorphy2.shapes import is_latin, is_punctuation, is_roman_number
+from pymorphy3.units.base import BaseAnalyzerUnit
+from pymorphy3.shapes import is_latin, is_punctuation, is_roman_number
 
 
 class _ShapeAnalyzer(BaseAnalyzerUnit):

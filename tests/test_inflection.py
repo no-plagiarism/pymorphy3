@@ -2,7 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 import pytest
 
-from pymorphy2.shapes import restore_capitalization
+from pymorphy3.shapes import restore_capitalization
 
 
 def with_test_data(data):

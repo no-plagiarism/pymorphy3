@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`pymorphy2.opencorpora_dict.preprocess` is a
+:mod:`pymorphy3.opencorpora_dict.preprocess` is a
 module for preprocessing parsed OpenCorpora dictionaries.
 
-The presence of this module means that pymorphy2 dictionaries are
+The presence of this module means that pymorphy3 dictionaries are
 not fully compatible with OpenCorpora.
 """
 from __future__ import absolute_import, unicode_literals
 import logging
 import collections
 
-from pymorphy2.utils import with_progress
-from pymorphy2.cache import memoized_with_single_argument
+from pymorphy3.utils import with_progress
+from pymorphy3.cache import memoized_with_single_argument
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ def drop_unsupported_parses(parsed_dict):
     Remove unsupported parses from OpenCorpora dictionary.
 
     In particular, lexemes with Init tags are removed
-    because pymorphy2 handles them differently.
+    because pymorphy3 handles them differently.
     """
     logger.info("dropping unsupported parses")
     for lex_id in parsed_dict.lexemes:

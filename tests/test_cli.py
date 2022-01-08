@@ -5,7 +5,7 @@ import logging
 import pytest
 import docopt
 
-from pymorphy2 import cli
+from pymorphy3 import cli
 
 
 def run_pymorphy2(args=(), stdin=None):

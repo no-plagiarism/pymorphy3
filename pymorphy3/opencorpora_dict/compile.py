@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`pymorphy2.opencorpora_dict.compile` is a
+:mod:`pymorphy3.opencorpora_dict.compile` is a
 module for converting OpenCorpora dictionaries
-to pymorphy2 representation.
+to pymorphy3 representation.
 """
 from __future__ import absolute_import, unicode_literals
 import os
@@ -17,8 +17,8 @@ try:
 except AttributeError:
     izip = zip
 
-from pymorphy2 import dawg
-from pymorphy2.utils import (
+from pymorphy3 import dawg
+from pymorphy3.utils import (
     longest_common_substring,
     largest_elements,
     with_progress

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`pymorphy2.opencorpora_dict.parse` is a
+:mod:`pymorphy3.opencorpora_dict.parse` is a
 module for OpenCorpora XML dictionaries parsing.
 """
 from __future__ import absolute_import, unicode_literals, division
@@ -25,7 +25,7 @@ except ImportError:
     def xml_clear_elem(elem):
         elem.clear()
 
-from pymorphy2.utils import with_progress
+from pymorphy3.utils import with_progress
 
 
 logger = logging.getLogger(__name__)

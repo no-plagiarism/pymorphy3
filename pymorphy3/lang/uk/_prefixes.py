@@ -348,7 +348,7 @@ KNOWN_PREFIXES = [
 _known1 = set(KNOWN_PREFIXES)
 
 
-# These prefixes are adapted from pymorphy2 Russian prefixes list;
+# These prefixes are adapted from pymorphy3 Russian prefixes list;
 # see https://github.com/kmike/pymorphy2/issues/58#issuecomment-207670264
 KNOWN_PREFIXES += [_p for _p in [
     "авіа",  # авіаквиток

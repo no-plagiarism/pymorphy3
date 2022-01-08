@@ -6,10 +6,10 @@ import os
 import functools
 import datetime
 
-from pymorphy2 import MorphAnalyzer
+from pymorphy3 import MorphAnalyzer
 from benchmarks import utils
 
-logger = logging.getLogger('pymorphy2.bench')
+logger = logging.getLogger('pymorphy3.bench')
 
 DATA_PATH = os.path.join(
     os.path.dirname(__file__),

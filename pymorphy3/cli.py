@@ -8,10 +8,10 @@ import time
 import codecs
 import operator
 
-import pymorphy2
-from pymorphy2.cache import lru_cache, memoized_with_single_argument
-from pymorphy2.utils import get_mem_usage
-from pymorphy2.tokenizers import simple_word_tokenize
+import pymorphy3
+from pymorphy3.cache import lru_cache, memoized_with_single_argument
+from pymorphy3.utils import get_mem_usage
+from pymorphy3.tokenizers import simple_word_tokenize
 
 PY2 = sys.version_info[0] == 2
 
@@ -56,7 +56,7 @@ DOC = head + __doc__.replace('::\n', ':')
 #   --nonlex            Parse non-lexical tokens
 
 
-logger = logging.getLogger('pymorphy2')
+logger = logging.getLogger('pymorphy3')
 
 
 # ============================== Entry point ============================
@@ -66,13 +66,13 @@ def main(argv=None):
     """
 
     from docopt import docopt
-    args = docopt(DOC, argv, version=pymorphy2.__version__)
+    args = docopt(DOC, argv, version=pymorphy3.__version__)
 
     path = args['--dict']
     lang = args['--lang']
 
     if args['parse']:
-        morph = pymorphy2.MorphAnalyzer(path=path, lang=lang)
+        morph = pymorphy3.MorphAnalyzer(path=path, lang=lang)
         in_file = _open_for_read(args['<input>'])
 
         if any([args['--score'], args['--lemmatize'], args['--tag']]):
@@ -131,7 +131,7 @@ def show_dict_mem_usage(lang, dict_path=None, verbose=False):
     initial_mem = get_mem_usage()
     initial_time = time.time()
 
-    morph = pymorphy2.MorphAnalyzer(path=dict_path, lang=lang)
+    morph = pymorphy3.MorphAnalyzer(path=dict_path, lang=lang)
 
     end_time = time.time()
     mem_usage = get_mem_usage()
@@ -143,7 +143,7 @@ def show_dict_mem_usage(lang, dict_path=None, verbose=False):
 
 
 def show_dict_meta(lang, dict_path=None):
-    morph = pymorphy2.MorphAnalyzer(path=dict_path, lang=lang)
+    morph = pymorphy3.MorphAnalyzer(path=dict_path, lang=lang)
 
     for key, value in morph.dictionary.meta.items():
         logger.info("%s: %s", key, value)

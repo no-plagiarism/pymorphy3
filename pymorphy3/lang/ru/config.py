@@ -3,7 +3,7 @@
 Constants and configuration for Russian language.
 """
 from __future__ import absolute_import, unicode_literals
-from pymorphy2 import units
+from pymorphy3 import units
 
 # paradigm prefixes used for dictionary compilation
 PARADIGM_PREFIXES = ["", "по", "наи"]

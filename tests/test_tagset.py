@@ -3,8 +3,8 @@ from __future__ import absolute_import, unicode_literals
 import pickle
 import pytest
 
-import pymorphy2
-from pymorphy2.tagset import OpencorporaTag
+import pymorphy3
+from pymorphy3.tagset import OpencorporaTag
 
 
 def test_hashing(Tag):
@@ -34,7 +34,7 @@ def test_repr(Tag):
 # Cloning of the Tag class is disabled to allow pickling
 @pytest.mark.xfail
 def test_extra_grammemes(Tag):
-    m = pymorphy2.MorphAnalyzer()
+    m = pymorphy3.MorphAnalyzer()
 
     assert m.TagClass.KNOWN_GRAMMEMES is not Tag.KNOWN_GRAMMEMES
     assert m.TagClass.KNOWN_GRAMMEMES is not OpencorporaTag.KNOWN_GRAMMEMES
@@ -67,7 +67,7 @@ def test_pickle(Tag):
 
 
 def test_pickle_custom():
-    m = pymorphy2.MorphAnalyzer()
+    m = pymorphy3.MorphAnalyzer()
     m.TagClass.KNOWN_GRAMMEMES.add('new_grammeme')
     tag = m.TagClass('new_grammeme')
     data = pickle.dumps(tag, pickle.HIGHEST_PROTOCOL)
