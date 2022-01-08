@@ -119,7 +119,7 @@ def _iter_entry_points(*args, **kwargs):
 def _lang_dict_paths():
     paths = dict(
         (pkg.name, pkg.load().get_path())
-        for pkg in _iter_entry_points('pymorphy2_dicts')
+        for pkg in _iter_entry_points('pymorphy3_dicts')
     )
 
     # discovery of pymorphy3 v0.8 dicts
