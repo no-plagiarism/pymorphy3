@@ -6,7 +6,8 @@ Authors and Contributors
 * @ivirabyan;
 * @anti-social;
 * @insolor.
-
+@d9nchik
+@Kowalski0805
 If you contributed to pymorphy2, please add yourself to this list
 (or update your contact information).
 
