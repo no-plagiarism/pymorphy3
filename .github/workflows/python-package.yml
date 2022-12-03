@@ -20,4 +20,5 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: fedora-python/tox-github-action@0.4
+    - name: Python Tox on Fedora
+      uses: fedora-python/tox-github-action@v0.4
