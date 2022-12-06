@@ -23,7 +23,7 @@ PARSES = _to_test_data("""
 # ========= adjectives
 хорошему            хороший     ADJF,Qual masc,sing,datv
 лучший              хороший     ADJF,Supr,Qual masc,sing,nomn
-наиневероятнейший   вероятный   ADJF,Supr,Qual masc,sing,nomn
+наиневероятнейший   невероятный   ADJF,Supr,Qual masc,sing,nomn
 наистарейший        старый      ADJF,Supr,Qual masc,sing,nomn
 
 # ========= е/ё
