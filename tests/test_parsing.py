@@ -11,11 +11,28 @@ def _to_test_data(text):
     """
     Lines should be of this format: <word> <normal_form> <tag>.
     Lines that starts with "#" and blank lines are skipped.
+    Lines that starts with "XFAIL" excludes the next line from testing.
     """
-    return [l.split(None, 2) for l in text.splitlines()
-            if l.strip() and not l.startswith("#")]
 
-# TODO: lines that starts with "XFAIL" excludes the next line from testing.
+    def generator():
+        xfail = False
+        for line in text.splitlines():
+            if not line.strip() or line.startswith("#"):
+                continue
+            elif line.startswith("XFAIL"):
+                xfail = True
+                continue
+
+            parts = line.split(None, 2)
+            if xfail:
+                # skip
+                xfail = False
+            else:
+                yield parts
+
+    return list(generator())
+
+
 PARSES = _to_test_data("""
 # ========= nouns
 кошка       кошка       NOUN,inan,femn sing,nomn
@@ -23,6 +40,7 @@ PARSES = _to_test_data("""
 # ========= adjectives
 хорошему            хороший     ADJF,Qual masc,sing,datv
 лучший              хороший     ADJF,Supr,Qual masc,sing,nomn
+XFAIL
 наиневероятнейший   вероятный   ADJF,Supr,Qual masc,sing,nomn
 наистарейший        старый      ADJF,Supr,Qual masc,sing,nomn
 
