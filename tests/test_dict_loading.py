@@ -7,7 +7,7 @@ from pymorphy3.analyzer import lang_dict_path
 
 
 def test_old_dictionaries_supported():
-    pytest.importorskip("pymorphy2_dicts")
+    pytest.importorskip("pymorphy3_dicts")
     m = pymorphy3.MorphAnalyzer(lang='ru-old')
     assert m.lang == 'ru-old'
     assert m.tag('стиль')[0].POS == 'NOUN'
@@ -15,8 +15,8 @@ def test_old_dictionaries_supported():
 
 def test_old_dictionaries_not_installed():
     try:
-        import pymorphy2_dicts
-        pytest.skip("pymorphy2_dicts package is installed")
+        import pymorphy3_dicts
+        pytest.skip("pymorphy3_dicts package is installed")
     except ImportError:
         pass
 
@@ -25,8 +25,8 @@ def test_old_dictionaries_not_installed():
 
 
 def test_old_dictionaries_supported_by_path():
-    pymorphy2_dicts = pytest.importorskip("pymorphy2_dicts")
-    m = pymorphy3.MorphAnalyzer(pymorphy2_dicts.get_path())
+    pymorphy3_dicts = pytest.importorskip("pymorphy3_dicts")
+    m = pymorphy3.MorphAnalyzer(pymorphy3_dicts.get_path())
     assert m.lang == 'ru'
     assert m.tag('стиль')[0].POS == 'NOUN'
 

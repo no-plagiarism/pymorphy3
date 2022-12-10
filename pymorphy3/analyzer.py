@@ -124,8 +124,8 @@ def _lang_dict_paths():
 
     # discovery of pymorphy3 v0.8 dicts
     try:
-        import pymorphy2_dicts
-        paths['ru-old'] = pymorphy2_dicts.get_path()
+        import pymorphy3_dicts
+        paths['ru-old'] = pymorphy3_dicts.get_path()
     except ImportError:
         pass
 
