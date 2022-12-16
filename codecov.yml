@@ -1,6 +1,13 @@
 comment:
-  layout: "header, diff, tree"
+  layout: "reach, diff, flags, files"
 
 coverage:
   status:
-    project: false
+    project:
+      default:
+        target: 80%
+        threshold: 3%
+    patch:
+      default:
+        target: 70%
+        threshold: 3%
