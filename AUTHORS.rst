@@ -8,6 +8,7 @@ Authors and Contributors
 * @insolor;
 * @d9nchik;
 * @Kowalski0805.
+* @ArchiDevil
 
 If you contributed to pymorphy2, please add yourself to this list
 (or update your contact information).
