@@ -1,23 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Pymorphy2 benchmark utility.
-
-Usage:
-    bench.py run [--dict=<DICT_PATH>] [--repeats=<NUM>] [--verbose]
-    bench.py -h | --help
-    bench.py --version
-
-Options:
-    -d --dict <DICT_PATH>   Use dictionary from <DICT_PATH>
-    -r --repeats <NUM>      Number of times to run each benchmarks [default: 5]
-    -v --verbose            Be more verbose
-
-"""
 import logging
 import sys
 import os
-from docopt import docopt
+import click
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -27,21 +13,26 @@ from benchmarks import speed
 logger = logging.getLogger('pymorphy3.bench')
 logger.addHandler(logging.StreamHandler())
 
-
+@click.group()
+@click.help_option('-h', '--help')
+@click.version_option(version=pymorphy3.__version__, message='%(version)s')
 def main():
-    """ CLI interface dispatcher """
-    args = docopt(__doc__, version=pymorphy3.__version__)
+    """ Pymorphy2 benchmark utility. """
 
-    if args['--verbose']:
+@main.command(context_settings={'show_default': True})
+@click.option('-d', '--dict', 'DICT_PATH', metavar='DICT_PATH', help='Use dictionary from <DICT_PATH>')
+@click.option('-r', '--repeats', default=5, help='Number of times to run each benchmarks')
+@click.option('-v', '--verbose', is_flag=True, help='Be more verbose')
+def run(DICT_PATH, repeats, verbose):
+    if verbose:
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.INFO)
 
-    if args['run']:
-        speed.bench_all(
-            dict_path=args['--dict'],
-            repeats=int(args['--repeats'])
-        )
+    speed.bench_all(
+        dict_path=DICT_PATH,
+        repeats=int(repeats)
+    )
 
     return 0
 
