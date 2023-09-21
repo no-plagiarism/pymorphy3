@@ -8,7 +8,11 @@ import time
 import codecs
 import operator
 
-import click
+try:
+    import click
+except ModuleNotFoundError as e:
+    raise ModuleNotFoundError('''pymorphy2's command line tools require Click which is not currently installed. Try installing Click via "pip install click".''') from e
+
 import pymorphy3
 from pymorphy3.cache import lru_cache, memoized_with_single_argument
 from pymorphy3.utils import get_mem_usage

@@ -28,7 +28,6 @@ py_version = sys.version_info[:2]
 
 
 install_requires = [
-    'click',
     'dawg-python >= 0.7.1',
     'pymorphy3-dicts-ru'
 ]
@@ -36,7 +35,10 @@ if py_version < (3, 0):
     install_requires.append("backports.functools_lru_cache >= 1.0.1")
 
 
-extras_require = {'fast': []}
+extras_require = {
+    'CLI': ['click'],
+    'fast': []
+}
 if is_cpython:
     extras_require['fast'].append("DAWG >= 0.8")
     if py_version < (3, 5):
