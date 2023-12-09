@@ -8,6 +8,11 @@ import time
 import codecs
 import operator
 
+try:
+    import click
+except ModuleNotFoundError as e:
+    raise ModuleNotFoundError('''pymorphy2's command line tools require Click which is not currently installed. Try installing Click via "pip install click".''') from e
+
 import pymorphy3
 from pymorphy3.cache import lru_cache, memoized_with_single_argument
 from pymorphy3.utils import get_mem_usage
@@ -15,12 +20,6 @@ from pymorphy3.tokenizers import simple_word_tokenize
 
 PY2 = sys.version_info[0] == 2
 
-# Hacks are here to make docstring compatible with both
-# docopt and sphinx.ext.autodoc.
-head = """
-
-Pymorphy2 is a morphological analyzer / inflection engine for Russian language.
-"""
 __doc__ = """
 Usage::
 
@@ -48,7 +47,6 @@ Options::
     -h --help           Show this help
 
 """
-DOC = head + __doc__.replace('::\n', ':')
 
 # TODO:
 #   -i --inline         Don't start each output result with a new line
@@ -60,53 +58,72 @@ logger = logging.getLogger('pymorphy3')
 
 
 # ============================== Entry point ============================
+@click.group()
+@click.help_option('-h', '--help')
+@click.version_option(version=pymorphy3.__version__, message='%(version)s')
 def main(argv=None):
     """
-    Pymorphy CLI interface dispatcher.
+    Pymorphy2 is a morphological analyzer / inflection engine for Russian language.
     """
 
-    from docopt import docopt
-    args = docopt(DOC, argv, version=pymorphy3.__version__)
+@main.command(name='parse', context_settings={'show_default': True})
+@click.option('--dict', 'path', help='Dictionary folder path')
+@click.option('--lang', default='ru', help='Language to use. Allowed values: ru, uk')
+@click.option('-l', '--lemmatize', is_flag=True, help='Include normal forms (lemmas)')
+@click.option('-s', '--score', is_flag=True, help='Include non-contextual P(tag|word) scores')
+@click.option('-t', '--tag', is_flag=True, help='Include tags')
+@click.option('--tokenized', is_flag=True, help='Assume that input text is already tokenized: one token per line.')
+@click.option('-c', '--cache', default=20000, help="Cache size, in entries. Set it to 0 to disable cache; use 'unlim' value for unlimited cache size")
+@click.option('--thresh', default=0.0, help='Drop all results with estimated P(tag|word) less than a threshold')
+@click.argument('input_', metavar='INPUT', required=False)
+def cli_parse(path, lang, score, lemmatize, tag, tokenized, cache, thresh, input_):
+    morph = pymorphy3.MorphAnalyzer(path=path, lang=lang)
+    in_file = _open_for_read(input_)
 
-    path = args['--dict']
-    lang = args['--lang']
+    if not any([score, lemmatize, tag]):
+        score, lemmatize, tag = True, True, True
 
-    if args['parse']:
-        morph = pymorphy3.MorphAnalyzer(path=path, lang=lang)
-        in_file = _open_for_read(args['<input>'])
+    if PY2:
+        out_file = codecs.getwriter('utf8')(sys.stdout)
+    else:
+        out_file = sys.stdout
 
-        if any([args['--score'], args['--lemmatize'], args['--tag']]):
-            score, lemmatize, tag = args['--score'], args['--lemmatize'], args['--tag']
-        else:
-            score, lemmatize, tag = True, True, True
+    return parse(
+        morph=morph,
+        in_file=in_file,
+        out_file=out_file,
+        tokenize=not tokenized,
+        score=score,
+        normal_form=lemmatize,
+        tag=tag,
+        newlines=True,  # not args['--inline'],
+        cache_size=cache,
+        thresh=thresh,
+    )
+@main.group(name='dict')
+def cli_dict():
+    pass
 
-        if PY2:
-            out_file = codecs.getwriter('utf8')(sys.stdout)
-        else:
-            out_file = sys.stdout
+@cli_dict.command(name='mem_usage', context_settings={'show_default': True})
+@click.option('--lang', default='ru', help='Language to use. Allowed values: ru, uk')
+@click.option('--dict', 'path', help='Dictionary folder path')
+@click.option('-v', '--verbose', is_flag=True, help='Be more verbose')
+def cli_dict_mem_usage(lang, path, verbose):
+    logger.addHandler(logging.StreamHandler())
+    logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+    logger.debug([lang, path, verbose])
 
-        return parse(
-            morph=morph,
-            in_file=in_file,
-            out_file=out_file,
-            tokenize=not args['--tokenized'],
-            score=score,
-            normal_form=lemmatize,
-            tag=tag,
-            newlines=True,  # not args['--inline'],
-            cache_size=args['--cache'],
-            thresh=float(args['--thresh']),
-        )
+    return show_dict_mem_usage(lang, path, verbose)
 
-    if args['dict']:
-        logger.addHandler(logging.StreamHandler())
-        logger.setLevel(logging.DEBUG if args['--verbose'] else logging.INFO)
-        logger.debug(args)
+@cli_dict.command(name='meta', context_settings={'show_default': True})
+@click.option('--lang', default='ru', help='Language to use. Allowed values: ru, uk')
+@click.option('--dict', 'path', help='Dictionary folder path')
+def cli_dict_meta(lang, path):
+    logger.addHandler(logging.StreamHandler())
+    logger.setLevel(logging.INFO)
+    logger.debug([lang, path])
 
-        if args['mem_usage']:
-            return show_dict_mem_usage(lang, path, args['--verbose'])
-        elif args['meta']:
-            return show_dict_meta(lang, path)
+    return show_dict_meta(lang, path)
 
 
 def _open_for_read(fn):
@@ -273,3 +290,6 @@ def _iter_tokens_tokenize(fp):
 def _iter_tokens_notokenize(fp):
     """ Return an iterator of input tokens; each line is a single token """
     return (line for line in (line.strip() for line in fp) if line)
+
+if __name__ == '__main__':
+    main()
