@@ -30,7 +30,8 @@ py_version = sys.version_info[:2]
 install_requires = [
     'dawg-python >= 0.7.1',
     'docopt-ng >= 0.6',
-    'pymorphy3-dicts-ru'
+    'pymorphy3-dicts-ru',
+    'setuptools >= 68.2.2 ; python_version >= "3.12"',
 ]
 if py_version < (3, 0):
     install_requires.append("backports.functools_lru_cache >= 1.0.1")
@@ -82,6 +83,10 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
