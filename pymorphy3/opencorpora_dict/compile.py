@@ -65,6 +65,7 @@ def compile_parsed_dict(parsed_dict, compile_options=None):
     """
     options = dict(
         min_ending_freq=2,
+        max_ending_freq=2**16 - 1,  # to fit into unsigned short
         min_paradigm_popularity=3,
         max_suffix_length=5,
     )
@@ -153,6 +154,7 @@ def compile_parsed_dict(parsed_dict, compile_options=None):
         paradigms=paradigms,
         suffixes=suffixes,
         min_ending_freq=options["min_ending_freq"],
+        max_ending_freq=options["max_ending_freq"],
         min_paradigm_popularity=options["min_paradigm_popularity"],
         max_suffix_length=options["max_suffix_length"],
         paradigm_prefixes=paradigm_prefixes,
@@ -274,8 +276,8 @@ def _to_paradigm(lexeme, paradigm_prefixes):
 
 
 def _suffixes_prediction_data(words, paradigm_popularity, gramtab, paradigms, suffixes,
-                              min_ending_freq, min_paradigm_popularity, max_suffix_length,
-                              paradigm_prefixes):
+                              min_ending_freq, max_ending_freq, min_paradigm_popularity,
+                              max_suffix_length, paradigm_prefixes):
 
     logger.debug('calculating prediction data: removing non-productive paradigms..')
     productive_paradigms = _popular_keys(paradigm_popularity, min_paradigm_popularity)
@@ -328,13 +330,13 @@ def _suffixes_prediction_data(words, paradigm_popularity, gramtab, paradigms, su
         logger.debug('calculating prediction data: preparing DAFSA #%d..' % form_prefix_id)
         endings = prefix_endings[form_prefix_id]
         dawgs_data.append(
-            _get_suffixes_dawg_data(endings, ending_counts, min_ending_freq)
+            _get_suffixes_dawg_data(endings, ending_counts, min_ending_freq, max_ending_freq)
         )
 
     return dawgs_data
 
 
-def _get_suffixes_dawg_data(endings, ending_counts, min_ending_freq):
+def _get_suffixes_dawg_data(endings, ending_counts, min_ending_freq, max_ending_freq):
     counted_suffixes_dawg_data = []
 
     for ending in endings:
@@ -350,6 +352,8 @@ def _get_suffixes_dawg_data(endings, ending_counts, min_ending_freq):
             )
 
             for form, cnt in common_form_counts:
+                if cnt > max_ending_freq:
+                    cnt = max_ending_freq
                 # form is a `(para_id, idx)` tuple here
                 # XXX: shouldn't we use inverted cnt to make the results
                 # sorted high to low?
