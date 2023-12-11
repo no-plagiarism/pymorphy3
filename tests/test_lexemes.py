@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 import pytest
 
 
@@ -13,6 +11,7 @@ def parse_lexemes(lexemes_txt):
              if not line.startswith("#")
     )
     return lexemes_txt.split("\n\n")
+
 
 def get_lexeme_words(lexeme):
     lexeme_words = tuple(lexeme.split())
@@ -187,7 +186,7 @@ def test_has_proper_lexemes(lexeme, morph):
     variants = _lexemes_for_word(lexeme_words[0], morph)
     if lexeme_words not in variants:
         variants_repr = "\n".join([" ".join(v) for v in variants])
-        assert False, "%s not in \n%s" % (lexeme, variants_repr)
+        assert False, f"{lexeme} not in \n{variants_repr}"
 
 
 @pytest.mark.parametrize("lexeme", LEXEMES)
@@ -234,7 +233,7 @@ def assert_has_full_lexeme(word, forms, morph):
         lexeme_forms = [(f.word, str(f.tag)) for f in p.lexeme]
         if lexeme_forms == forms:
             return
-    raise AssertionError("Word %s doesn't have lexeme %s" % (word, forms))
+    raise AssertionError(f"Word {word} doesn't have lexeme {forms}")
 
 
 def _lexemes_for_word(word, morph):
@@ -242,4 +241,3 @@ def _lexemes_for_word(word, morph):
     for p in morph.parse(word):
         res.append(tuple(f.word for f in p.lexeme))
     return res
-

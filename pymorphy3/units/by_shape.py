@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 Analyzer units that analyzes non-word tokes
 -------------------------------------------
 """
 
-from __future__ import absolute_import, unicode_literals, division
-
-from pymorphy3.units.base import BaseAnalyzerUnit
 from pymorphy3.shapes import is_latin, is_punctuation, is_roman_number
+from pymorphy3.units.base import BaseAnalyzerUnit
 
 
 class _ShapeAnalyzer(BaseAnalyzerUnit):
@@ -18,7 +15,7 @@ class _ShapeAnalyzer(BaseAnalyzerUnit):
         self.score = score
 
     def init(self, morph):
-        super(_ShapeAnalyzer, self).init(morph)
+        super().init(morph)
 
         for lat, cyr in zip(self.EXTRA_GRAMMEMES, self.EXTRA_GRAMMEMES_CYR):
             self.morph.TagClass.add_grammemes_to_known(lat, cyr)
@@ -60,7 +57,7 @@ class _SingleShapeAnalyzer(_ShapeAnalyzer):
         assert self.TAG_STR_CYR is not None
         self.EXTRA_GRAMMEMES = self.TAG_STR.split(',')
         self.EXTRA_GRAMMEMES_CYR = self.TAG_STR_CYR.split(',')
-        super(_SingleShapeAnalyzer, self).init(morph)
+        super().init(morph)
         self._tag = self.morph.TagClass(self.TAG_STR)
 
     def get_tag(self, word, shape):
@@ -105,7 +102,7 @@ class NumberAnalyzer(_ShapeAnalyzer):
     EXTRA_GRAMMEMES_CYR = ['ЧИСЛО', 'цел', 'вещ']
 
     def init(self, morph):
-        super(NumberAnalyzer, self).init(morph)
+        super().init(morph)
         self._tags = {
             'intg': morph.TagClass('NUMB,intg'),
             'real': morph.TagClass('NUMB,real'),

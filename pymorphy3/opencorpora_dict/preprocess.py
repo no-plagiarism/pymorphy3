@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 :mod:`pymorphy3.opencorpora_dict.preprocess` is a
 module for preprocessing parsed OpenCorpora dictionaries.
@@ -6,12 +5,11 @@ module for preprocessing parsed OpenCorpora dictionaries.
 The presence of this module means that pymorphy3 dictionaries are
 not fully compatible with OpenCorpora.
 """
-from __future__ import absolute_import, unicode_literals
-import logging
 import collections
+import logging
+from functools import lru_cache
 
 from pymorphy3.utils import with_progress
-from pymorphy3.cache import memoized_with_single_argument
 
 logger = logging.getLogger(__name__)
 
@@ -53,13 +51,13 @@ def drop_unsupported_parses(parsed_dict):
         ]
 
 
-@memoized_with_single_argument({})
+@lru_cache(maxsize=None)
 def tag2grammemes(tag_str):
     """ Given tag string, return tag grammemes """
     return _split_grammemes(replace_redundant_grammemes(tag_str))
 
 
-@memoized_with_single_argument({})
+@lru_cache(maxsize=None)
 def replace_redundant_grammemes(tag_str):
     """ Replace 'loc1', 'gen1' and 'acc1' grammemes in ``tag_str`` """
     return tag_str.replace('loc1', 'loct').replace('gen1', 'gent').replace('acc1', 'accs')

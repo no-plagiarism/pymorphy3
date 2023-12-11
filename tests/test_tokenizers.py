@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 from pymorphy3.tokenizers import simple_word_tokenize
 
 class TestSimpleWordTokenize:

@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-import random
-import concurrent.futures
 import pytest
-import pymorphy3
+
 from utils import assert_parse_is_correct
 
 

@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 Analyzer units for abbreviated words
 ------------------------------------
 """
-from __future__ import absolute_import, unicode_literals, division
 from pymorphy3.units.base import BaseAnalyzerUnit
 
 
@@ -20,7 +18,7 @@ class _InitialsAnalyzer(BaseAnalyzerUnit):
         self._letters_set = set(letters)
 
     def init(self, morph):
-        super(_InitialsAnalyzer, self).init(morph)
+        super().init(morph)
         self._init_grammemes(self.morph.TagClass)
         self._tags = self._get_gender_case_tags(self.tag_pattern)
 
@@ -52,13 +50,13 @@ class AbbreviatedFirstNameAnalyzer(_InitialsAnalyzer):
     TAG_PATTERN = 'NOUN,anim,%(gender)s,Sgtm,Name,Fixd,Abbr,Init sing,%(case)s'
 
     def init(self, morph):
-        super(AbbreviatedFirstNameAnalyzer, self).init(morph)
+        super().init(morph)
         self._tags_masc = [tag for tag in self._tags if 'masc' in tag]
         self._tags_femn = [tag for tag in self._tags if 'femn' in tag]
         assert self._tags_masc + self._tags_femn == self._tags
 
     def _init_grammemes(self, tag_cls):
-        super(AbbreviatedFirstNameAnalyzer, self)._init_grammemes(tag_cls)
+        super()._init_grammemes(tag_cls)
         self.morph.TagClass.add_grammemes_to_known('Name', 'имя', overwrite=False)
 
     def get_lexeme(self, form):
@@ -81,7 +79,7 @@ class AbbreviatedPatronymicAnalyzer(_InitialsAnalyzer):
     TAG_PATTERN = 'NOUN,anim,%(gender)s,Sgtm,Patr,Fixd,Abbr,Init sing,%(case)s'
 
     def _init_grammemes(self, tag_cls):
-        super(AbbreviatedPatronymicAnalyzer, self)._init_grammemes(tag_cls)
+        super()._init_grammemes(tag_cls)
         self.morph.TagClass.add_grammemes_to_known('Patr', 'отч', overwrite=False)
 
     def get_lexeme(self, form):

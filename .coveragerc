@@ -1,4 +1,4 @@
 [run]
 branch = True
 omit =
-    pymorphy2/vendor/*
+    pymorphy3/vendor/*

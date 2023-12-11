@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 import os
 
 import pytest
 
 import pymorphy3
+from pymorphy3 import lang
+from pymorphy3.dawg import assert_can_create
 from pymorphy3.opencorpora_dict.compile import (
     _to_paradigm,
     convert_to_pymorphy2
 )
 from pymorphy3.opencorpora_dict.parse import parse_opencorpora_xml
-from pymorphy3.dawg import assert_can_create
-from pymorphy3 import lang
 
 
 class TestToyDictionary:
@@ -79,7 +77,7 @@ class TestToyDictionary:
         assert morph.normal_forms('а') == ['а']
 
 
-class TestToParadigm(object):
+class TestToParadigm:
 
     def test_simple(self):
         lexeme = [
@@ -160,5 +158,3 @@ class TestToParadigm(object):
         stem, forms = _to_paradigm(lexeme, lang.ru.PARADIGM_PREFIXES)
         assert stem == 'английски'
         assert forms == (("", 1, ""),)
-
-

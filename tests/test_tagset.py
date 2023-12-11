@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 import pickle
+
 import pytest
 
 import pymorphy3
@@ -14,8 +13,8 @@ def test_hashing(Tag):
 
     assert tag1 == tag2
     assert tag1 != tag3
-    assert set([tag1]) == set([tag2])
-    assert set([tag3]) != set([tag1])
+    assert {tag1} == {tag2}
+    assert {tag3} != {tag1}
 
 
 @pytest.mark.parametrize(("tag", "cls"), [
@@ -79,12 +78,12 @@ class TestUpdated:
 
     def test_number(self, Tag):
         tag = Tag('NOUN,sing,masc')
-        grammemes = tag.updated_grammemes(required=set(['plur']))
-        assert grammemes == set(['NOUN', 'plur'])
+        grammemes = tag.updated_grammemes(required={'plur'})
+        assert grammemes == {'NOUN', 'plur'}
 
     def test_order(self, Tag):
         tag = Tag('VERB,impf,tran sing,3per,pres,indc')
-        grammemes = tag.updated_grammemes(required=set(['1per']))
+        grammemes = tag.updated_grammemes(required={'1per'})
         assert grammemes == set('VERB,sing,impf,tran,1per,pres,indc'.split(','))
 
 
@@ -141,7 +140,7 @@ class TestAttributes:
         tag = Tag('NOUN,inan,masc plur,accs')
 
         # this doesn't raise an exception
-        assert tag.gender in set(['masc', 'sing'])
+        assert tag.gender in {'masc', 'sing'}
 
 
 class TestContains:
@@ -173,13 +172,13 @@ class TestContains:
 
     def test_contains_set(self, Tag):
         tag = Tag('VERB,perf,tran plur,impr,excl')
-        assert set(['VERB', 'perf']) in tag
-        assert set(['VERB', 'sing']) not in tag
+        assert {'VERB', 'perf'} in tag
+        assert {'VERB', 'sing'} not in tag
 
         assert set() in tag # ??
 
         with pytest.raises(ValueError):
-            assert set(['VERB', 'pref']) in tag
+            assert {'VERB', 'pref'} in tag
 
 
 class TestCyrillic:

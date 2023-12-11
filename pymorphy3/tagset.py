@@ -1,18 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Utils for working with grammatical tags.
 """
-from __future__ import absolute_import, unicode_literals
 import collections
-
-try:
-    from sys import intern
-except ImportError:
-    # python 2.x has builtin ``intern`` function
-    pass
+from sys import intern
 
 # a bit of *heavy* magic...
-class _select_grammeme_from(object):
+class _select_grammeme_from:
     """
     Descriptor object for accessing grammemes of certain classes
     (e.g. number or voice).
@@ -24,7 +17,7 @@ class _select_grammeme_from(object):
         # In order to fight typos, raise an exception
         # if a result is compared to a grammeme which
         # is not in a set of allowed grammemes.
-        _str = type("unicode string")
+        _str = str
 
         class TypedGrammeme(_str):
             def __eq__(self, other):
@@ -32,7 +25,7 @@ class _select_grammeme_from(object):
                     return False
                 if other not in grammeme_set:
                     known_grammemes = ", ".join(grammeme_set)
-                    raise ValueError("'%s' is not a valid grammeme for this attribute. Valid grammemes: %s" % (other, known_grammemes))
+                    raise ValueError(f"'{other}' is not a valid grammeme for this attribute. Valid grammemes: {known_grammemes}")
                 return _str.__eq__(self, other)
 
             def __ne__(self, other):
@@ -55,7 +48,7 @@ class _select_grammeme_from(object):
 
 
 # Design notes: Tag objects are immutable, but the tag class is mutable.
-class OpencorporaTag(object):
+class OpencorporaTag:
     """
     Wrapper class for OpenCorpora.org tags.
 
@@ -64,7 +57,7 @@ class OpencorporaTag(object):
         In order to work properly, the class has to be globally
         initialized with actual grammemes (using _init_grammemes method).
 
-        Pymorphy2 initializes it when loading a dictionary;
+        pymorphy3 initializes it when loading a dictionary;
         it may be not a good idea to use this class directly.
         If possible, use ``morph_analyzer.TagClass`` instead.
 
@@ -98,9 +91,9 @@ class OpencorporaTag(object):
         False
         >>> 'Geox' in tag
         False
-        >>> set(['VERB', 'perf']) in tag
+        >>> {'VERB', 'perf'} in tag
         True
-        >>> set(['VERB', 'perf', 'sing']) in tag
+        >>> {'VERB', 'perf', 'sing'} in tag
         False
 
     In order to fight typos, for unknown grammemes an exception is raised::
@@ -109,7 +102,7 @@ class OpencorporaTag(object):
         Traceback (most recent call last):
         ...
         ValueError: Grammeme is unknown: foobar
-        >>> set(['NOUN', 'foo', 'bar']) in tag
+        >>> {'NOUN', 'foo', 'bar'} in tag
         Traceback (most recent call last):
         ...
         ValueError: Grammemes are unknown: {'bar', 'foo'}
@@ -228,10 +221,10 @@ class OpencorporaTag(object):
 
     # Helper attributes for inflection/declension routines
     # ----------------------------------------------------
-    _NON_PRODUCTIVE_GRAMMEMES = set(['NUMR', 'NPRO', 'PRED', 'PREP',
-                                     'CONJ', 'PRCL', 'INTJ', 'Apro'])
+    _NON_PRODUCTIVE_GRAMMEMES = {'NUMR', 'NPRO', 'PRED', 'PREP',
+                                 'CONJ', 'PRCL', 'INTJ', 'Apro'}
     _EXTRA_INCOMPATIBLE = {  # XXX: is it a good idea to have these rules?
-        'plur': set(['GNdr']),
+        'plur': {'GNdr'},
         # XXX: how to use rules from OpenCorpora?
         # (they have "lexeme/form" separation)
     }
@@ -242,11 +235,11 @@ class OpencorporaTag(object):
     KNOWN_GRAMMEMES = set()
 
     _NUMERAL_AGREEMENT_GRAMMEMES = (
-        set(['sing', 'nomn']),
-        set(['sing', 'accs']),
-        set(['sing', 'gent']),
-        set(['plur', 'nomn']),
-        set(['plur', 'gent']),
+        {'sing', 'nomn'},
+        {'sing', 'accs'},
+        {'sing', 'gent'},
+        {'plur', 'nomn'},
+        {'plur', 'gent'},
     )
 
     RARE_CASES = {
@@ -273,7 +266,7 @@ class OpencorporaTag(object):
         # - use byte strings for grammemes under Python 2.x;
         # - grammemes are interned.
         grammemes = tag.replace(' ', ',', 1).split(',')
-        grammemes_tuple = tuple([intern(str(g)) for g in grammemes])
+        grammemes_tuple = tuple((intern(str(g)) for g in grammemes))
 
         self._assert_grammemes_are_known(set(grammemes_tuple))
 
@@ -343,17 +336,14 @@ class OpencorporaTag(object):
             return True
         else:
             if not self.grammeme_is_known(grammeme):
-                raise ValueError("Grammeme is unknown: %s" % grammeme)
+                raise ValueError(f"Grammeme is unknown: {grammeme}")
             return False
 
-    # FIXME: __repr__ and __str__ always return unicode,
-    # but they should return a byte string under Python 2.x.
     def __str__(self):
         return self._str
 
     def __repr__(self):
-        return "OpencorporaTag('%s')" % self
-
+        return f"OpencorporaTag('{self}')"
 
     def __eq__(self, other):
         return self._grammemes_tuple == other._grammemes_tuple
@@ -376,7 +366,6 @@ class OpencorporaTag(object):
     def __reduce__(self):
         return self.__class__, (self._str,), None
 
-
     def is_productive(self):
         return not self.grammemes & self._NON_PRODUCTIVE_GRAMMEMES
 
@@ -393,8 +382,8 @@ class OpencorporaTag(object):
         if not grammemes <= cls.KNOWN_GRAMMEMES:
             cls._assert_grammemes_initialized()
             unknown = grammemes - cls.KNOWN_GRAMMEMES
-            unknown_repr = ", ".join(["'%s'" % g for g in sorted(unknown)])
-            raise ValueError("Grammemes are unknown: {%s}" % unknown_repr)
+            unknown_repr = ", ".join([f"'{g}'" for g in sorted(unknown)])
+            raise ValueError(f"Grammemes are unknown: {{{unknown_repr}}}")
 
     @classmethod
     def _assert_grammemes_initialized(cls):
@@ -410,7 +399,7 @@ class OpencorporaTag(object):
         new_grammemes = self.grammemes | required
         for grammeme in required:
             if not self.grammeme_is_known(grammeme):
-                raise ValueError("Unknown grammeme: %s" % grammeme)
+                raise ValueError(f"Unknown grammeme: {grammeme}")
             new_grammemes -= self._GRAMMEME_INCOMPATIBLE[grammeme]
         return new_grammemes
 
@@ -468,7 +457,7 @@ class OpencorporaTag(object):
         for index, (name, parent, alias, description) in enumerate(dict_grammemes):
             cls._GRAMMEME_INDICES[name] = index
             incompatible = cls._EXTRA_INCOMPATIBLE.get(name, set())
-            incompatible = (incompatible | children[parent]) - set([name])
+            incompatible = (incompatible | children[parent]) - {name}
 
             cls._GRAMMEME_INCOMPATIBLE[name] = frozenset(incompatible)
 
@@ -491,13 +480,13 @@ class OpencorporaTag(object):
             index = 2
 
         if self.POS not in ('NOUN', 'ADJF', 'PRTF'):
-            return set([])
+            return set()
 
         if self.POS == 'NOUN' and self.case not in ('nomn', 'accs'):
             if index == 0:
-                grammemes = set(['sing', self.case])
+                grammemes = {'sing', self.case}
             else:
-                grammemes = set(['plur', self.case])
+                grammemes = {'plur', self.case}
         elif index == 0:
             if self.case == 'nomn':
                 grammemes = self._NUMERAL_AGREEMENT_GRAMMEMES[0]
@@ -511,8 +500,8 @@ class OpencorporaTag(object):
             grammemes = self._NUMERAL_AGREEMENT_GRAMMEMES[4]
         return grammemes
 
-    #@classmethod
-    #def _clone_class(cls):
+    # @classmethod
+    # def _clone_class(cls):
     #    Tag = type(cls.__name__, (cls,), {
     #         'KNOWN_GRAMMEMES': cls.KNOWN_GRAMMEMES.copy(),
     #    })
@@ -533,7 +522,7 @@ class CyrillicOpencorporaTag(OpencorporaTag):
 
     FORMAT = 'opencorpora-ext'
 
-    _GRAMMEME_ALIAS_MAP = dict()
+    _GRAMMEME_ALIAS_MAP = {}
 
     @classmethod
     def _from_internal_tag(cls, tag):
@@ -562,14 +551,14 @@ class CyrillicOpencorporaTag(OpencorporaTag):
 
         GRAMMEME_INCOMPATIBLE = collections.defaultdict(set)
         for name, value in cls._GRAMMEME_INCOMPATIBLE.items():
-            GRAMMEME_INCOMPATIBLE[cls._from_internal_grammeme(name)] = set([
+            GRAMMEME_INCOMPATIBLE[cls._from_internal_grammeme(name)] = {
                 cls._from_internal_grammeme(gr) for gr in value
-            ])
+            }
         cls._GRAMMEME_INCOMPATIBLE = GRAMMEME_INCOMPATIBLE
 
-        cls._NON_PRODUCTIVE_GRAMMEMES = set([
+        cls._NON_PRODUCTIVE_GRAMMEMES = {
             cls._from_internal_grammeme(gr) for gr in cls._NON_PRODUCTIVE_GRAMMEMES
-        ])
+        }
 
     @classmethod
     def _init_alias_map(cls, dict_grammemes):
@@ -596,7 +585,7 @@ def _translate_comma_separated(tag_part, mapping):
     return ",".join(grammemes)
 
 
-registry = dict()
+registry = {}
 
 for tag_type in [CyrillicOpencorporaTag, OpencorporaTag]:
     registry[tag_type.FORMAT] = tag_type

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
 import pytest
 
 from pymorphy3.utils import get_mem_usage

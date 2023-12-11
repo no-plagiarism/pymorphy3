@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Analogy analyzer units
 ----------------------
@@ -8,25 +7,23 @@ at how similar known words are analyzed.
 
 """
 
-from __future__ import absolute_import, unicode_literals, division
-
 import operator
 
-from pymorphy3.units.base import AnalogyAnalizerUnit
+from pymorphy3.dawg import PrefixMatcher
+from pymorphy3.units.base import AnalogyAnalyzerUnit
 from pymorphy3.units.by_lookup import DictionaryAnalyzer
 from pymorphy3.units.utils import (
     add_parse_if_not_seen,
     add_tag_if_not_seen,
-    without_fixed_prefix,
-    with_prefix
+    with_prefix,
+    without_fixed_prefix
 )
 from pymorphy3.utils import word_splits
-from pymorphy3.dawg import PrefixMatcher
 
 _cnt_getter = operator.itemgetter(3)
 
 
-class _PrefixAnalyzer(AnalogyAnalizerUnit):
+class _PrefixAnalyzer(AnalogyAnalyzerUnit):
 
     def normalizer(self, form, this_method):
         prefix = this_method[1]
@@ -54,7 +51,7 @@ class KnownPrefixAnalyzer(_PrefixAnalyzer):
         self.min_remainder_length = min_remainder_length
 
     def init(self, morph):
-        super(KnownPrefixAnalyzer, self).init(morph)
+        super().init(morph)
         self.get_prefixes = PrefixMatcher(self.known_prefixes).prefixes
 
     def parse(self, word, word_lower, seen_parses):
@@ -113,7 +110,7 @@ class UnknownPrefixAnalyzer(_PrefixAnalyzer):
         self.score_multiplier = score_multiplier
 
     def init(self, morph):
-        super(AnalogyAnalizerUnit, self).init(morph)
+        super(AnalogyAnalyzerUnit, self).init(morph)
         self.dict_analyzer = DictionaryAnalyzer()
         self.dict_analyzer.init(morph)
 
@@ -155,7 +152,7 @@ class UnknownPrefixAnalyzer(_PrefixAnalyzer):
         return result
 
 
-class KnownSuffixAnalyzer(AnalogyAnalizerUnit):
+class KnownSuffixAnalyzer(AnalogyAnalyzerUnit):
     """
     Parse the word by checking how the words with similar suffixes
     are parsed.
@@ -165,14 +162,13 @@ class KnownSuffixAnalyzer(AnalogyAnalizerUnit):
     """
     class FakeDictionary(DictionaryAnalyzer):
         """ This is just a DictionaryAnalyzer with different __repr__ """
-        pass
 
     def __init__(self, score_multiplier=0.5,  min_word_length=4):
         self.min_word_length = min_word_length
         self.score_multiplier = score_multiplier
 
     def init(self, morph):
-        super(KnownSuffixAnalyzer, self).init(morph)
+        super().init(morph)
         self._paradigm_prefixes = list(reversed(list(enumerate(self.dict.paradigm_prefixes))))
         self._prediction_splits = list(reversed(range(1, self._max_suffix_length()+1)))
 

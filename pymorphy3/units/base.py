@@ -1,17 +1,14 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals, division
 import inspect
-import sys
 
 from pymorphy3.utils import kwargs_repr
 from pymorphy3.units.utils import (
-    without_last_method,
-    append_method,
     add_tag_if_not_seen,
+    append_method,
+    without_last_method
 )
 
 
-class BaseAnalyzerUnit(object):
+class BaseAnalyzerUnit:
     """
     Base class for analyzer units.
 
@@ -57,7 +54,7 @@ class BaseAnalyzerUnit(object):
         cls_text = self.__class__.__name__
         kwargs_text = kwargs_repr(self._get_params(),
                                   self._repr_skip_value_params)
-        return str("%s(%s)") % (cls_text, kwargs_text)
+        return f"{cls_text}({kwargs_text})"
 
     @classmethod
     def _get_param_names(cls):
@@ -68,10 +65,7 @@ class BaseAnalyzerUnit(object):
         """
         if cls.__init__ is object.__init__:
             return []
-        if sys.version_info[0] == 2:
-            args = inspect.getargspec(cls.__init__)[0]
-        else:
-            args = inspect.getfullargspec(cls.__init__)[0]
+        args = inspect.getfullargspec(cls.__init__)[0]
         return sorted(args[1:])
 
     def _get_params(self):
@@ -81,8 +75,7 @@ class BaseAnalyzerUnit(object):
         )
 
 
-
-class AnalogyAnalizerUnit(BaseAnalyzerUnit):
+class AnalogyAnalyzerUnit(BaseAnalyzerUnit):
 
     def normalized(self, form):
         base_analyzer, this_method = self._method_info(form)

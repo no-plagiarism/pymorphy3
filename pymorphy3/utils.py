@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-# unicode_literals here would break tests
-
-import os
+import codecs
 import heapq
 import itertools
-import codecs
 import json
+import os
 
 
 def get_mem_usage():
@@ -133,10 +129,11 @@ def kwargs_repr(kwargs=None, dont_show_value=None):
     """
     kwargs = kwargs or {}
     dont_show_value = set(dont_show_value or [])
-    return ", ".join(
-        "%s=%s" % (k, repr(v) if k not in dont_show_value else "<...>")
-        for k, v in sorted(kwargs.items())
-    )
+    repr_parts = []
+    for k, v in sorted(kwargs.items()):
+        repr_v = repr(v) if k not in dont_show_value else "<...>"
+        repr_parts.append(f"{k}={repr_v}")
+    return ", ".join(repr_parts)
 
 
 def with_progress(iterable, desc=None, total=None, leave=True):
@@ -154,8 +151,7 @@ def with_progress(iterable, desc=None, total=None, leave=True):
                     total = len(iterable)
                 except Exception:
                     total = 0
-            for el in tqdm(iterable, desc=desc, total=total, leave=leave):
-                yield el
+            yield from tqdm(iterable, desc=desc, total=total, leave=leave)
             if leave:
                 print("")
 

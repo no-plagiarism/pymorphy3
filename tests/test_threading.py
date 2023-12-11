@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
 import concurrent.futures
 import random
-import pytest
-import pymorphy3
 
-from utils import assert_parse_is_correct
+import pymorphy3
 from test_parsing import PARSES
+from utils import assert_parse_is_correct
 
 
 def _check_analyzer(morph, parses):
@@ -31,14 +28,14 @@ def _create_morph_analyzer(i):
 
 def test_threading_single_morph_analyzer(morph):
     with concurrent.futures.ThreadPoolExecutor(3) as executor:
-        res = list(executor.map(_check_analyzer, [morph]*10, [PARSES]*10))
+        list(executor.map(_check_analyzer, [morph]*10, [PARSES]*10))
 
 
 def test_threading_multiple_morph_analyzers():
     with concurrent.futures.ThreadPoolExecutor(3) as executor:
-        res = list(executor.map(_check_new_analyzer, [PARSES]*10))
+        list(executor.map(_check_new_analyzer, [PARSES]*10))
 
 
 def test_threading_create_analyzer():
     with concurrent.futures.ThreadPoolExecutor(3) as executor:
-        res = list(executor.map(_create_morph_analyzer, range(10)))
+        list(executor.map(_create_morph_analyzer, range(10)))

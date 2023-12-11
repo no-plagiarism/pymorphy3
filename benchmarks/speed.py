@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals, division
-import logging
 import codecs
-import os
-import functools
 import datetime
+import functools
+import logging
+import os
 
-from pymorphy3 import MorphAnalyzer
 from benchmarks import utils
+from pymorphy3 import MorphAnalyzer
 
 logger = logging.getLogger('pymorphy3.bench')
 
@@ -78,7 +76,7 @@ def bench_parse(morph, words, total_usages, repeats):
 
     def _run_is_noun():
         for word, cnt in words:
-            [set(['NOUN']) in p.tag for p in morph.parse(word)]
+            [{'NOUN'} in p.tag for p in morph.parse(word)]
 
     def _run_is_noun2():
         for word, cnt in words:
@@ -153,4 +151,4 @@ def bench_all(repeats, dict_path=None):
     bench_parse(morph_plain, words, total_usages, repeats)
 
     end_time = datetime.datetime.now()
-    logger.info("----\nDone in %s.\n" % (end_time-start_time))
+    logger.info("----\nDone in %s.\n", end_time-start_time)

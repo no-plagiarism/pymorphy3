@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-# unicode_literals future import is not needed and breaks 2.x tests
-
 import re
-import warnings
 import unicodedata
+import warnings
 
 
 _latin_letters_cache = {}
