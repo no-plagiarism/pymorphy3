@@ -100,18 +100,25 @@ class ProbabilityEstimator:
 
 
 def _iter_entry_points(*args, **kwargs):
-    """ Like pkg_resources.iter_entry_points, but uses a WorkingSet which
-    is not populated at startup. This ensures that all entry points
-    are picked up, even if a package which provides them is installed
+    """
+    Finds entry points of installed packages, including ones installed
     after the current process is started.
 
     The main use case is to make ``!pip install pymorphy3`` work
     within a Jupyter or Google Colab notebook.
     See https://github.com/kmike/pymorphy2/issues/131
     """
-    import pkg_resources
-    ws = pkg_resources.WorkingSet()
-    return ws.iter_entry_points(*args, **kwargs)
+    from importlib.metadata import entry_points, EntryPoint
+    ep = entry_points()
+    result: set[EntryPoint] = set()
+    if not hasattr(ep, 'select'):
+        # Python < 3.10 old entry_points API
+        for group in args:
+            result.update(ep.get(group, ()))
+    else:
+        for group in args:
+            result.update(ep.select(group=group))
+    return result
 
 
 def _lang_dict_paths():
