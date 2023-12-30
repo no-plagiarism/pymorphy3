@@ -108,7 +108,16 @@ def _iter_entry_points(*args, **kwargs):
     within a Jupyter or Google Colab notebook.
     See https://github.com/kmike/pymorphy2/issues/131
     """
-    from importlib.metadata import entry_points, EntryPoint
+    import sys
+    if sys.version_info < (3, 7):
+        import pkg_resources
+        ws = pkg_resources.WorkingSet()
+        return ws.iter_entry_points(*args, **kwargs)
+    if sys.version_info < (3, 8):
+        # Python 3.7
+        from importlib_metadata import entry_points, EntryPoint
+    else:
+        from importlib.metadata import entry_points, EntryPoint
     ep = entry_points()
     result: set[EntryPoint] = set()
     if not hasattr(ep, 'select'):
