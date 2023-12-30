@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*-
-from __future__ import print_function, unicode_literals, division
-import os
-import heapq
 import collections
+import heapq
 import logging
-import threading
 import operator
+import os
+import threading
 import warnings
 
+import pymorphy3.lang
 from pymorphy3 import opencorpora_dict
 from pymorphy3.dawg import ConditionalProbDistDAWG
-import pymorphy3.lang
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +63,7 @@ class Parse(_Parse):
     #     return self._dict.build_paradigm_info(self.para_id)
 
 
-class ProbabilityEstimator(object):
+class ProbabilityEstimator:
     def __init__(self, dict_path):
         cpd_path = os.path.join(dict_path, 'p_t_given_w.intdawg')
         self.p_t_given_w = ConditionalProbDistDAWG().load(cpd_path)
@@ -139,14 +137,12 @@ def lang_dict_path(lang):
         return lang_paths[lang]
 
     raise ValueError(
-        "Can't find a dictionary for language %r. Installed languages: %r. "
-        "Try installing pymorphy3-dicts-%s package." % (
-            lang, list(lang_paths.keys()), lang
-        )
+        f"Can't find a dictionary for language {repr(lang)}. Installed languages: {repr(list(lang_paths.keys()))}. "
+        f"Try installing pymorphy3-dicts-{lang} package."
     )
 
 
-class MorphAnalyzer(object):
+class MorphAnalyzer:
     """
     Morphological analyzer for Russian language.
 
@@ -168,7 +164,7 @@ class MorphAnalyzer(object):
     Alternatively (e.g. if you have your own precompiled dictionaries),
     either create ``PYMORPHY2_DICT_PATH`` environment variable
     with a path to dictionaries, or pass ``path`` argument
-    to :class:`pymorphy2.MorphAnalyzer` constructor::
+    to :class:`pymorphy3.MorphAnalyzer` constructor::
 
         >>> morph = pymorphy3.MorphAnalyzer(path='/path/to/dictionaries') # doctest: +SKIP
 
@@ -252,7 +248,7 @@ class MorphAnalyzer(object):
         aliases = {'ru-old': 'ru'}
         lang = aliases.get(self.lang, self.lang)
         if not hasattr(pymorphy3.lang, lang):
-            warnings.warn("unknown language code: %r" % lang)
+            warnings.warn(f"unknown language code: {repr(lang)}")
             return None
         return getattr(pymorphy3.lang, lang)
 
@@ -292,8 +288,8 @@ class MorphAnalyzer(object):
         if dictionary.lang != lang:
             # allow incorrect 'lang' values, but show a warning
             warnings.warn(
-                "Dictionary language (%r) doesn't match "
-                "analyzer language (%r)." % (dictionary.lang, lang)
+                f"Dictionary language ({repr(dictionary.lang)}) doesn't match "
+                f"analyzer language ({repr(lang)})."
             )
 
         return lang

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-
 from pymorphy3.units.base import BaseAnalyzerUnit
 
 
@@ -10,7 +7,7 @@ class UnknAnalyzer(BaseAnalyzerUnit):
     This allows to always have at least one parse result.
     """
     def init(self, morph):
-        super(UnknAnalyzer, self).init(morph)
+        super().init(morph)
         self.morph.TagClass.add_grammemes_to_known('UNKN', 'НЕИЗВ')
         self._tag = self.morph.TagClass('UNKN')
 

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Constants and configuration for Russian language.
 """
-from __future__ import absolute_import, unicode_literals
 from pymorphy3 import units
 
 # paradigm prefixes used for dictionary compilation

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Constants and configuration for Ukrainian language.
 """
-from __future__ import absolute_import, unicode_literals
 from pymorphy3 import units
 from ._prefixes import KNOWN_PREFIXES
 

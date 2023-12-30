@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals, division
+import gc
 import time
 import timeit
-import gc
 
 def measure(func, inner_iterations=1, repeats=5):
     """
@@ -40,4 +38,4 @@ def bench(stmt, setup, op_count=1, repeats=3, runs=5):
 
 
 def format_bench(name, result, description='K words/sec'):
-    return "%25s:\t%0.3f%s" % (name, result, description)
+    return f"{name:25}:\t{result:0.3f}{description}"

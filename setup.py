@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-import sys
 import platform
+
 from setuptools import setup
 
 
@@ -9,22 +9,15 @@ def get_version():
         return f.readline().split("=")[1].strip(' "\n')
 
 
-# TODO: use environment markres instead of Python code in order to
+# TODO: use environment markers instead of Python code in order to
 # allow building proper wheels. Markers are not enabled right now because
 # of setuptools/wheel incompatibilities and the 'pip >= 6.0' requirement.
 
 # extras_require = {
 #     'fast:platform_python_implementation==CPython': ["DAWG>=0.7.7"],
-#     'fast:platform_python_implementation==CPython and python_version<3.5': [
-#         "fastcache>=1.0.2"
-#     ],
-#     ':python_version<"3.0"': [
-#         "backports.functools_lru_cache>=1.0.1",
-#     ],
 # }
 
 is_cpython = platform.python_implementation() == 'CPython'
-py_version = sys.version_info[:2]
 
 
 install_requires = [
@@ -32,8 +25,6 @@ install_requires = [
     'pymorphy3-dicts-ru',
     'setuptools >= 68.2.2 ; python_version >= "3.12"',
 ]
-if py_version < (3, 0):
-    install_requires.append("backports.functools_lru_cache >= 1.0.1")
 
 
 extras_require = {
@@ -42,9 +33,6 @@ extras_require = {
 }
 if is_cpython:
     extras_require['fast'].append("DAWG >= 0.8")
-    if py_version < (3, 5):
-        # lru_cache is optimized in Python 3.5
-        extras_require['fast'].append("fastcache >= 1.0.2")
 
 
 setup(
@@ -81,7 +69,6 @@ setup(
         'Natural Language :: Russian',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',

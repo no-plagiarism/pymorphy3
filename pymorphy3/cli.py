@@ -1,24 +1,17 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import unicode_literals, print_function, division
-
-import sys
 import logging
-import time
-import codecs
 import operator
+import sys
+import time
+from functools import lru_cache
 
 try:
     import click
 except ModuleNotFoundError as e:
-    raise ModuleNotFoundError('''pymorphy2's command line tools require Click which is not currently installed. Try installing Click via "pip install click".''') from e
+    raise ModuleNotFoundError('''pymorphy3's command line tools require Click which is not currently installed. Try installing Click via "pip install click".''') from e
 
 import pymorphy3
-from pymorphy3.cache import lru_cache, memoized_with_single_argument
-from pymorphy3.utils import get_mem_usage
 from pymorphy3.tokenizers import simple_word_tokenize
-
-PY2 = sys.version_info[0] == 2
+from pymorphy3.utils import get_mem_usage
 
 __doc__ = """
 Usage::
@@ -63,7 +56,7 @@ logger = logging.getLogger('pymorphy3')
 @click.version_option(version=pymorphy3.__version__, message='%(version)s')
 def main(argv=None):
     """
-    Pymorphy2 is a morphological analyzer / inflection engine for Russian language.
+    pymorphy3 is a morphological analyzer / inflection engine for Russian language.
     """
 
 @main.command(name='parse', context_settings={'show_default': True})
@@ -83,10 +76,7 @@ def cli_parse(path, lang, score, lemmatize, tag, tokenized, cache, thresh, input
     if not any([score, lemmatize, tag]):
         score, lemmatize, tag = True, True, True
 
-    if PY2:
-        out_file = codecs.getwriter('utf8')(sys.stdout)
-    else:
-        out_file = sys.stdout
+    out_file = sys.stdout
 
     return parse(
         morph=morph,
@@ -129,14 +119,8 @@ def cli_dict_meta(lang, path):
 def _open_for_read(fn):
     """ Open a file for reading """
     if fn in ['-', '', None]:
-        if PY2:
-            return codecs.getreader('utf8')(sys.stdin)
-        else:
-            return sys.stdin
-    if PY2:
-        return codecs.open(fn, 'rt', encoding='utf8')
-    else:
-        return open(fn, 'rt', encoding='utf8')
+        return sys.stdin
+    return open(fn, 'rt', encoding='utf8')
 
 
 # ============================ Commands ===========================
@@ -147,8 +131,6 @@ def show_dict_mem_usage(lang, dict_path=None, verbose=False):
     """
     initial_mem = get_mem_usage()
     initial_time = time.time()
-
-    morph = pymorphy3.MorphAnalyzer(path=dict_path, lang=lang)
 
     end_time = time.time()
     mem_usage = get_mem_usage()
@@ -195,7 +177,7 @@ def parse(morph, in_file, out_file, tokenize, score, normal_form, tag,
 
     _parse = parser.parse
     if cache_size == 'unlim':
-        _parse = memoized_with_single_argument({})(_parse)
+        _parse = lru_cache(maxsize=None)(_parse)
     else:
         cache_size = int(cache_size)
         if cache_size:
@@ -206,7 +188,7 @@ def parse(morph, in_file, out_file, tokenize, score, normal_form, tag,
         _write(_parse(token))
 
 
-class _TokenParserFormatter(object):
+class _TokenParserFormatter:
     """
     This class defines its `parse` method based on arguments passed.
     Some ugly code is to make all ifs work only once, not for each token.
@@ -235,14 +217,14 @@ class _TokenParserFormatter(object):
                 if score:
                     def _parse_token(tok):
                         seq = [
-                            "%s:%0.3f=%s" % (p.normal_form, p.score, p.tag)
+                            f"{p.normal_form}:{p.score:0.3f}={p.tag}"
                             for p in morph_parse(tok) if p.score >= thresh
                         ]
                         return tpl % (tok, join(seq))
                 else:
                     def _parse_token(tok):
                         seq = [
-                            "%s:%s" % (p.normal_form, p.tag)
+                            f"{p.normal_form}:{p.tag}"
                             for p in morph_parse(tok) if p.score >= thresh
                         ]
                         return tpl % (tok, join(seq))
@@ -258,7 +240,7 @@ class _TokenParserFormatter(object):
                         key=val, reverse=True
                     )
                     if score:
-                        seq = ["%s:%0.3f" % (lemma, w) for (lemma, w) in items]
+                        seq = [f"{lemma}:{w:0.3f}" for (lemma, w) in items]
                     else:
                         seq = [lemma for (lemma, w) in items]
 
@@ -267,14 +249,14 @@ class _TokenParserFormatter(object):
             if score:
                 def _parse_token(tok):
                     seq = [
-                        "%0.3f=%s" % (p.score, p.tag)
+                        f"{p.score:0.3f}={p.tag}"
                         for p in morph_parse(tok) if p.score >= thresh
                     ]
                     return tpl % (tok, join(seq))
             else:
                 def _parse_token(tok):
                     seq = [
-                        "%s" % p.tag
+                        str(p.tag)
                         for p in morph_parse(tok) if p.score >= thresh
                     ]
                     return tpl % (tok, join(seq))

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals, division
-
-
 def add_parse_if_not_seen(parse, result_list, seen_parses):
     try:
         para_id = parse[4][0][2]

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Module for estimating P(t|w) from partially annotated OpenCorpora XML dump
 and saving this information to a file.
@@ -6,12 +5,12 @@ and saving this information to a file.
 This module requires NLTK 3.x, opencorpora-tools>=0.4.4 and dawg >= 0.7
 packages for probability estimation and resulting file creation.
 """
-from __future__ import absolute_import
-import os
 import logging
+import os
+
 from pymorphy3 import MorphAnalyzer
-from pymorphy3.opencorpora_dict.preprocess import tag2grammemes
 from pymorphy3.dawg import ConditionalProbDistDAWG
+from pymorphy3.opencorpora_dict.preprocess import tag2grammemes
 from pymorphy3.opencorpora_dict.storage import update_meta
 from pymorphy3.utils import with_progress
 
@@ -26,7 +25,7 @@ def add_conditional_tag_probability(corpus_filename, out_path, min_word_freq,
     if logger is None:
         logger = logging.getLogger(__name__)
 
-    logger.info("Estimating P(t|w) from %s" % corpus_filename)
+    logger.info("Estimating P(t|w) from %s", corpus_filename)
     cpd, cfd = estimate_conditional_tag_probability(morph, corpus_filename, logger)
 
     logger.info("Encoding P(t|w) as DAWG")
@@ -83,7 +82,7 @@ def estimate_conditional_tag_probability(morph, corpus_filename, logger=None):
             (w.lower(), tag2grammemes(t))
             for (w, t) in disambig_words
             if len(morph.tag(w)) > 1
-        ) if gr != set(['UNKN'])
+        ) if gr != {'UNKN'}
     ]
 
     logger.info("Computing P(t|w)")
@@ -146,5 +145,3 @@ def _tag_probabilities(morph, word, cpd):
         (p.tag, prob)
         for (p, prob) in _parse_probabilities(morph, word, cpd)
     )
-
-

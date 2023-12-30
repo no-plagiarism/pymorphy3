@@ -1,20 +1,17 @@
-# -*- coding: utf-8 -*-
 """
 Analyzer units for unknown words with hyphens
 ---------------------------------------------
 """
 
-from __future__ import absolute_import, unicode_literals, division
 from pymorphy3.dawg import PrefixMatcher
+from pymorphy3.units.base import AnalogyAnalyzerUnit, BaseAnalyzerUnit
+from pymorphy3.units.utils import (add_parse_if_not_seen,
+                                   replace_methods_stack,
+                                   with_prefix, with_suffix,
+                                   without_fixed_prefix, without_fixed_suffix)
 
-from pymorphy3.units.base import BaseAnalyzerUnit, AnalogyAnalizerUnit
-from pymorphy3.units.utils import (add_parse_if_not_seen, add_tag_if_not_seen,
-                                   with_suffix, without_fixed_suffix,
-                                   with_prefix, without_fixed_prefix,
-                                   replace_methods_stack)
 
-
-class HyphenSeparatedParticleAnalyzer(AnalogyAnalizerUnit):
+class HyphenSeparatedParticleAnalyzer(AnalogyAnalyzerUnit):
     """
     Parse the word by analyzing it without
     a particle after a hyphen.
@@ -102,7 +99,7 @@ class HyphenAdverbAnalyzer(BaseAnalyzerUnit):
         self.score_multiplier = score_multiplier
 
     def init(self, morph):
-        super(HyphenAdverbAnalyzer, self).init(morph)
+        super().init(morph)
         self._tag = self.morph.TagClass('ADVB')
 
     def parse(self, word, word_lower, seen_parses):
@@ -129,7 +126,7 @@ class HyphenAdverbAnalyzer(BaseAnalyzerUnit):
             return False
 
         tags = self.morph.tag(word[3:])
-        return any(set(['ADJF', 'sing', 'datv']) in tag for tag in tags)
+        return any({'ADJF', 'sing', 'datv'} in tag for tag in tags)
 
     def normalized(self, form):
         return form
@@ -162,7 +159,7 @@ class HyphenatedWordsAnalyzer(BaseAnalyzerUnit):
         self.skip_prefixes = skip_prefixes
 
     def init(self, morph):
-        super(HyphenatedWordsAnalyzer, self).init(morph)
+        super().init(morph)
         Tag = morph.TagClass
         self._FEATURE_GRAMMEMES = (Tag.PARTS_OF_SPEECH | Tag.NUMBERS |
                                    Tag.CASES | Tag.PERSONS | Tag.TENSES)
@@ -342,7 +339,7 @@ class HyphenatedWordsAnalyzer(BaseAnalyzerUnit):
             score = (left[3] + right[3]) / 2
             method_stack = ((self, left[4], right[4]), )
 
-            yield (word, tag, normal_form, score, method_stack)
+            yield word, tag, normal_form, score, method_stack
 
     def _align_lexeme_forms(self, left_lexeme, right_lexeme):
         # FIXME: quadratic algorithm

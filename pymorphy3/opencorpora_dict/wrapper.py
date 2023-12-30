@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals, division
 import logging
+
 from .storage import load_dict
 
 logger = logging.getLogger(__name__)
 
 
-class Dictionary(object):
+class Dictionary:
     """
     OpenCorpora dictionary wrapper class.
     """
@@ -132,12 +131,10 @@ class Dictionary(object):
         (default empty prefix means "all words").
         """
 
-        for word, (para_id, idx) in self.words.iteritems(prefix):
+        for word, (para_id, idx) in self.words.iteritems(prefix):  # DAWG.items() returns a list
             tag = self.build_tag_info(para_id, idx)
             normal_form = self.build_normal_form(para_id, idx, word)
             yield word, tag, normal_form, para_id, idx
 
     def __repr__(self):
         return str("<%s>") % self.__class__.__name__
-
-

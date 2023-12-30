@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 import pytest
 
 from pymorphy3.shapes import restore_capitalization
@@ -83,9 +81,9 @@ def test_second_cases(word, grammemes, result, morph):
 @with_test_data([
     ('валенок', ['gent', 'sing'], 'валенка'),
     ('валенок', ['gen2', 'sing'], 'валенка'),  # there is no gen2
-    ('велосипед', ['loct'], 'велосипеде'), # о велосипеде
-    ('велосипед', ['loc2'], 'велосипеде'), # а тут второго предложного нет, в велосипеде
-    ('хомяк', ['voct'], 'хомяк'),        # there is not voct, nomn should be used
+    ('велосипед', ['loct'], 'велосипеде'),  # о велосипеде
+    ('велосипед', ['loc2'], 'велосипеде'),  # а тут второго предложного нет, в велосипеде
+    ('хомяк', ['voct'], 'хомяк'),  # there is not voct, nomn should be used
     ('Геннадий', ['voct'], 'Геннадий'),  # there is not voct, nomn should be used
 ])
 def test_case_substitution(word, grammemes, result, morph):
@@ -95,8 +93,8 @@ def test_case_substitution(word, grammemes, result, morph):
 @pytest.mark.xfail
 @with_test_data([
     # доп. падежи, fixme
-    ('лес', ['loct'], 'лесе'),   # о лесе
-    ('лес', ['loc2'], 'лесу'),   # в лесу
+    ('лес', ['loct'], 'лесе'),  # о лесе
+    ('лес', ['loc2'], 'лесу'),  # в лесу
     ('острова', ['datv'], 'островам'),
 ])
 def test_best_guess(word, grammemes, result, morph):

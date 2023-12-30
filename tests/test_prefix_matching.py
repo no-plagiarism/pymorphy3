@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 import pytest
-from pymorphy3.dawg import PythonPrefixMatcher, PrefixMatcher
+
 from pymorphy3 import lang
+from pymorphy3.dawg import PrefixMatcher, PythonPrefixMatcher
 
 MATCHERS = [PythonPrefixMatcher, PrefixMatcher]
 HAS_PREFIXES = [

@@ -1,26 +1,19 @@
-# -*- coding: utf-8 -*-
 """
 :mod:`pymorphy3.opencorpora_dict.compile` is a
 module for converting OpenCorpora dictionaries
 to pymorphy3 representation.
 """
-from __future__ import absolute_import, unicode_literals
-import os
-import logging
+import array
 import collections
 import itertools
-import array
+import logging
 import operator
-
-try:
-    izip = itertools.izip
-except AttributeError:
-    izip = zip
+import os
 
 from pymorphy3 import dawg
 from pymorphy3.utils import (
-    longest_common_substring,
     largest_elements,
+    longest_common_substring,
     with_progress
 )
 
@@ -63,11 +56,11 @@ def compile_parsed_dict(parsed_dict, compile_options=None):
     """
     Return compacted dictionary data.
     """
-    options = dict(
-        min_ending_freq=2,
-        min_paradigm_popularity=3,
-        max_suffix_length=5,
-    )
+    options = {
+        "min_ending_freq": 2,
+        "min_paradigm_popularity": 3,
+        "max_suffix_length": 5,
+    }
     options.update(compile_options or {})
     paradigm_prefixes = options["paradigm_prefixes"]
 
@@ -75,8 +68,8 @@ def compile_parsed_dict(parsed_dict, compile_options=None):
     paradigms = []
     words = []
 
-    tag_ids = dict()
-    paradigm_ids = dict()
+    tag_ids = {}
+    paradigm_ids = {}
 
     logger.info("inlining lexeme derivational rules")
     lexemes = _join_lexemes(parsed_dict.lexemes, parsed_dict.links)
@@ -100,7 +93,7 @@ def compile_parsed_dict(parsed_dict, compile_options=None):
         if paradigm not in paradigm_ids:
             paradigm_ids[paradigm] = len(paradigms)
             paradigms.append(
-                tuple([(suff, tag_ids[tag], pref) for suff, tag, pref in paradigm])
+                tuple(((suff, tag_ids[tag], pref) for suff, tag, pref in paradigm))
             )
 
         para_id = paradigm_ids[paradigm]
@@ -112,16 +105,15 @@ def compile_parsed_dict(parsed_dict, compile_options=None):
                 (form, (para_id, idx))
             )
 
-        if not (index % 10000):
+        if not index % 10000:
             word = paradigm[0][2] + stem + paradigm[0][0]
             logger.debug("%20s %15s %15s %15s", word, len(gramtab), len(words), len(paradigms))
-
 
     logger.debug("%20s %15s %15s %15s", "total:", len(gramtab), len(words), len(paradigms))
     logger.debug("linearizing paradigms")
 
     def get_form(para):
-        return list(next(izip(*para)))
+        return list(next(zip(*para)))
 
     forms = [get_form(para) for para in paradigms]
     suffixes = sorted(set(list(itertools.chain(*forms))))
@@ -165,7 +157,7 @@ def compile_parsed_dict(parsed_dict, compile_options=None):
 
     prediction_suffixes_dawgs = []
     for prefix_id, dawg_data in enumerate(suffixes_dawgs_data):
-        logger.debug('building prediction_suffixes DAFSA #%d' % prefix_id)
+        logger.debug('building prediction_suffixes DAFSA #%d', prefix_id)
         prediction_suffixes_dawgs.append(dawg.PredictionSuffixesDAWG(dawg_data))
 
     return CompiledDictionary(
@@ -214,10 +206,10 @@ def _join_lexemes(lexemes, links):
 #    <type id="27">ADJF_TEXT-ADJF_NUMBER</type> # e.g. первый - 1-й
 #    </link_types>
 
-    EXCLUDED_LINK_TYPES = set(['7', '21', '23', '27'])
-#    ALLOWED_LINK_TYPES = set(['3', '4', '5'])
+    EXCLUDED_LINK_TYPES = {'7', '21', '23', '27'}
+    # ALLOWED_LINK_TYPES = {'3', '4', '5'}
 
-    moves = dict()
+    moves = {}
 
     def move_lexeme(from_id, to_id):
         lm = lexemes[str(from_id)]
@@ -233,8 +225,8 @@ def _join_lexemes(lexemes, links):
         if type_id in EXCLUDED_LINK_TYPES:
             continue
 
-#        if type_id not in ALLOWED_LINK_TYPES:
-#            continue
+        # if type_id not in ALLOWED_LINK_TYPES:
+        #    continue
 
         move_lexeme(link_end, link_start)
 
@@ -317,7 +309,7 @@ def _suffixes_prediction_data(words, paradigm_popularity, gramtab, paradigms, su
 
         POS = tuple(tag.replace(' ', ',', 1).split(','))[0]
 
-        for i in range(max(len(form_suffix), 1), max_suffix_length+1): #was: 1,2,3,4,5
+        for i in range(max(len(form_suffix), 1), max_suffix_length+1): # was: 1,2,3,4,5
             word_end = word[-i:]
             ending_counts[word_end] += 1
             prefix_endings[form_prefix_id][word_end][POS][(para_id, idx)] += 1
@@ -325,7 +317,7 @@ def _suffixes_prediction_data(words, paradigm_popularity, gramtab, paradigms, su
     dawgs_data = []
 
     for form_prefix_id in sorted(prefix_endings.keys()):
-        logger.debug('calculating prediction data: preparing DAFSA #%d..' % form_prefix_id)
+        logger.debug('calculating prediction data: preparing DAFSA #%d..', form_prefix_id)
         endings = prefix_endings[form_prefix_id]
         dawgs_data.append(
             _get_suffixes_dawg_data(endings, ending_counts, min_ending_freq)
@@ -369,7 +361,7 @@ def _linearized_paradigm(paradigm):
     Convert ``paradigm`` (a list of tuples with numbers)
     to 1-dimensional array.array (for reduced memory usage).
     """
-    return array.array(str("H"), list(itertools.chain(*zip(*paradigm))))
+    return array.array("H", list(itertools.chain(*zip(*paradigm))))
 
 
 def _create_out_path(out_path, overwrite=False):
@@ -383,4 +375,3 @@ def _create_out_path(out_path, overwrite=False):
             logger.warning("Output folder already exists!")
             return False
     return True
-

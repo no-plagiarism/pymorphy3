@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import logging
-import sys
 import os
+import sys
+
 import click
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -17,7 +17,7 @@ logger.addHandler(logging.StreamHandler())
 @click.help_option('-h', '--help')
 @click.version_option(version=pymorphy3.__version__, message='%(version)s')
 def main():
-    """ Pymorphy2 benchmark utility. """
+    """ pymorphy3 benchmark utility. """
 
 @main.command(context_settings={'show_default': True})
 @click.option('-d', '--dict', 'DICT_PATH', metavar='DICT_PATH', help='Use dictionary from <DICT_PATH>')

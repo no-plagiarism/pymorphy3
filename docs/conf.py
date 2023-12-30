@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # pymorphy3 documentation build configuration file, created by
 # sphinx-quickstart on Sun Jul 29 04:34:30 2012.
 #
@@ -10,9 +8,8 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-from __future__ import unicode_literals
-
-import sys, os
+import os
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

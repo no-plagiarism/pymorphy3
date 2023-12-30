@@ -1,33 +1,31 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
 import logging
 
-from click.testing import CliRunner
 import pytest
+from click.testing import CliRunner
 
 from pymorphy3 import cli
 
 
-def run_pymorphy2(args=()):
+def run_pymorphy3(args=()):
     runner = CliRunner(mix_stderr = False)
     results = runner.invoke(cli.main, args)
 
     return results.stdout, results.stderr
 
 def test_show_usage():
-    out = ' '.join(run_pymorphy2([]))
+    out = ' '.join(run_pymorphy3([]))
     assert 'Usage:' in out
 
 
 def test_show_memory_usage():
     pytest.importorskip("psutil")
-    out = ' '.join(run_pymorphy2(['dict', 'mem_usage']))
+    out = ' '.join(run_pymorphy3(['dict', 'mem_usage']))
     assert 'Memory usage:' in out
 
 
 def test_show_dict_meta(morph):
     meta = morph.dictionary.meta
-    out = ' '.join(run_pymorphy2(['dict', 'meta']))
+    out = ' '.join(run_pymorphy3(['dict', 'meta']))
     assert meta['compiled_at'] in out
 
 
@@ -38,7 +36,7 @@ def test_parse_basic(tmpdir):
         p.write_text("""
         крот пришел
         """, encoding='utf8')
-        out, err = run_pymorphy2(["parse", str(p)])
+        out, err = run_pymorphy3(["parse", str(p)])
         print(out)
         print(err)
         assert out.strip() == """
