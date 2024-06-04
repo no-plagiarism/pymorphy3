@@ -1,6 +1,10 @@
 import logging
 
-from .storage import load_dict
+from .storage import load_dict, LoadedDictionary
+from typing import TYPE_CHECKING, Union
+
+if TYPE_CHECKING:
+    from pymorphy3 import dawg
 
 logger = logging.getLogger(__name__)
 
@@ -9,8 +13,8 @@ class Dictionary:
     """
     OpenCorpora dictionary wrapper class.
     """
-
-    def __init__(self, path):
+    _data: LoadedDictionary
+    def __init__(self, path: str):
 
         logger.info("Loading dictionaries from %s", path)
 
@@ -23,11 +27,11 @@ class Dictionary:
         self.gramtab = self._data.gramtab
         self.paradigm_prefixes = self._data.paradigm_prefixes
         self.suffixes = self._data.suffixes
-        self.words = self._data.words
+        self.words: dawg.WordsDawg = self._data.words
         self.prediction_suffixes_dawgs = self._data.prediction_suffixes_dawgs
         self.meta = self._data.meta
         self.Tag = self._data.Tag
-        self.lang = self.meta.get('language_code')
+        self.lang: Union[str, None] = self.meta.get('language_code')
 
         # extra attributes
         self.path = path

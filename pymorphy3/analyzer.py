@@ -5,17 +5,24 @@ import operator
 import os
 import threading
 import warnings
+from typing import NamedTuple, Union, Set, List
 
 import pymorphy3.lang
 from pymorphy3 import opencorpora_dict
+from pymorphy3 import tagset
 from pymorphy3.dawg import ConditionalProbDistDAWG
 
 logger = logging.getLogger(__name__)
-
-_Parse = collections.namedtuple('Parse', 'word, tag, normal_form, score, methods_stack')
-
 _score_getter = operator.itemgetter(3)
 auto = object()
+
+
+class _Parse(NamedTuple):
+    word: str
+    tag: tagset.OpencorporaTag
+    normal_for: str
+    score: float
+    methods_stack: tuple
 
 
 class Parse(_Parse):
@@ -23,13 +30,13 @@ class Parse(_Parse):
     Parse result wrapper.
     """
 
-    _morph = None
+    _morph: "MorphAnalyzer" = None
     """ :type _morph: MorphAnalyzer """
 
     _dict = None
     """ :type _dict: pymorphy3.opencorpora_dict.Dictionary """
 
-    def inflect(self, required_grammemes):
+    def inflect(self, required_grammemes: Set[str]) -> Union["Parse", None]:
         res = self._morph._inflect(self, required_grammemes)
         return None if not res else res[0]
 
@@ -292,7 +299,7 @@ class MorphAnalyzer:
         return lang_dict_path(lang)
 
     @classmethod
-    def choose_language(cls, dictionary, lang):
+    def choose_language(cls, dictionary: opencorpora_dict.Dictionary, lang: Union[str, None]) -> str:
         if lang is None:
             if dictionary.lang is None:
                 # this could be e.g. old pymorphy3 dictionary
@@ -310,7 +317,7 @@ class MorphAnalyzer:
 
         return lang
 
-    def parse(self, word):
+    def parse(self, word: str) -> List[Parse]:
         """
         Analyze the word and return a list of :class:`pymorphy3.analyzer.Parse`
         namedtuples:
@@ -368,11 +375,11 @@ class MorphAnalyzer:
 
     # ==== inflection ========
 
-    def get_lexeme(self, form):
+    def get_lexeme(self, form: Parse):
         """
         Return the lexeme this parse belongs to.
         """
-        methods_stack = form[4]
+        methods_stack = form.methods_stack
         last_method = methods_stack[-1]
         result = last_method[0].get_lexeme(form)
 
@@ -380,7 +387,7 @@ class MorphAnalyzer:
             return result
         return [self._result_type(*p) for p in result]
 
-    def _inflect(self, form, required_grammemes):
+    def _inflect(self, form: Parse, required_grammemes: Set[str]):
         possible_results = [f for f in self.get_lexeme(form)
                             if required_grammemes <= f[1].grammemes]
 
@@ -414,7 +421,7 @@ class MorphAnalyzer:
             else:
                 yield self._result_type(*parse)
 
-    def word_is_known(self, word, strict=False):
+    def word_is_known(self, word: str, strict: bool = False) -> bool:
         """
         Check if a ``word`` is in the dictionary.
 

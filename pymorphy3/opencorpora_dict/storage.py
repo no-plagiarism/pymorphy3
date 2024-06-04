@@ -8,6 +8,7 @@ import datetime
 import logging
 import os
 import struct
+from typing import NamedTuple, Union, List, Dict
 
 import pymorphy3
 from pymorphy3 import tagset
@@ -18,16 +19,16 @@ logger = logging.getLogger(__name__)
 
 CURRENT_FORMAT_VERSION = '2.4'
 
-LoadedDictionary = collections.namedtuple('LoadedDictionary', [
-    'meta',
-    'gramtab',
-    'suffixes',
-    'paradigms',
-    'words',
-    'prediction_suffixes_dawgs',
-    'Tag',
-    'paradigm_prefixes',
-])
+
+class LoadedDictionary(NamedTuple):
+    meta: Union[collections.OrderedDict, Dict]
+    gramtab: List[tagset.OpencorporaTag]
+    suffixes: List[str]
+    paradigms: List
+    words: dawg.WordsDawg
+    prediction_suffixes_dawgs: List[dawg.PredictionSuffixesDAWG]
+    Tag: type[tagset.OpencorporaTag]
+    paradigm_prefixes: List[str]
 
 
 def load_dict(path, gramtab_format='opencorpora-int'):
@@ -142,7 +143,7 @@ def save_compiled_dict(compiled_dict, out_path, source_name, language_code):
     ])
 
 
-def load_meta(filename):
+def load_meta(filename) -> Union[collections.OrderedDict, Dict]:
     """ Load metadata. """
     meta = json_read(filename, parse_float=str)
     if hasattr(collections, 'OrderedDict'):
