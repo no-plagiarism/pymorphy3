@@ -1,4 +1,5 @@
 import inspect
+from typing import Set, List, Union, TYPE_CHECKING
 
 from pymorphy3.utils import kwargs_repr
 from pymorphy3.units.utils import (
@@ -6,6 +7,11 @@ from pymorphy3.units.utils import (
     append_method,
     without_last_method
 )
+
+if TYPE_CHECKING:
+    from pymorphy3.analyzer import Parse, MorphAnalyzer
+    from pymorphy3.tagset import OpencorporaTag
+    from pymorphy3.opencorpora_dict import Dictionary
 
 
 class BaseAnalyzerUnit:
@@ -21,21 +27,21 @@ class BaseAnalyzerUnit:
     In __init__ method all parameters must be saved as instance variables
     for analyzer unit to work.
     """
-    morph = None
-    dict = None
+    morph: Union["MorphAnalyzer", None] = None
+    dict: Union["Dictionary", None] = None
     _repr_skip_value_params = None
 
-    def init(self, morph):
+    def init(self, morph: "MorphAnalyzer") -> None:
         self.morph = morph
         self.dict = morph.dictionary
 
     def clone(self):
         return self.__class__(**self._get_params())
 
-    def parse(self, word, word_lower, seen_parses):
+    def parse(self, word: str, word_lower: str, seen_parses: Set["Parse"]) -> List["Parse"]:
         raise NotImplementedError()
 
-    def tag(self, word, word_lower, seen_tags):
+    def tag(self, word: str, word_lower: str, seen_tags: Set["OpencorporaTag"]) -> List["OpencorporaTag"]:
         # By default .tag() uses .parse().
         # Usually it is possible to write a more efficient implementation;
         # analyzers should do it when possible.

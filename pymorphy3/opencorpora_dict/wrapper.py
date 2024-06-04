@@ -1,4 +1,5 @@
 import logging
+import array
 
 from .storage import load_dict, LoadedDictionary
 from typing import TYPE_CHECKING, Union
@@ -68,7 +69,7 @@ class Dictionary:
             )
         return res
 
-    def build_normal_form(self, para_id, idx, fixed_word):
+    def build_normal_form(self, para_id: int, idx: int, fixed_word: str) -> str:
         """
         Build a normal form.
         """
@@ -89,7 +90,7 @@ class Dictionary:
 
         return normal_prefix + stem + normal_suffix
 
-    def build_stem(self, paradigm, idx, fixed_word):
+    def build_stem(self, paradigm: array.array, idx: int, fixed_word: str) -> str:
         """
         Return word stem (given a word, paradigm and the word index).
         """

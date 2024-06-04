@@ -24,7 +24,7 @@ class LoadedDictionary(NamedTuple):
     meta: Union[collections.OrderedDict, Dict]
     gramtab: List[tagset.OpencorporaTag]
     suffixes: List[str]
-    paradigms: List
+    paradigms: List[array.array]
     words: dawg.WordsDawg
     prediction_suffixes_dawgs: List[dawg.PredictionSuffixesDAWG]
     Tag: type[tagset.OpencorporaTag]

@@ -5,12 +5,13 @@ import operator
 import os
 import threading
 import warnings
-from typing import NamedTuple, Union, Set, List
+from typing import NamedTuple, Union, Set, List, Type
 
 import pymorphy3.lang
 from pymorphy3 import opencorpora_dict
 from pymorphy3 import tagset
 from pymorphy3.dawg import ConditionalProbDistDAWG
+from pymorphy3.units.base import BaseAnalyzerUnit
 
 logger = logging.getLogger(__name__)
 _score_getter = operator.itemgetter(3)
@@ -75,7 +76,7 @@ class ProbabilityEstimator:
         cpd_path = os.path.join(dict_path, 'p_t_given_w.intdawg')
         self.p_t_given_w = ConditionalProbDistDAWG().load(cpd_path)
 
-    def apply_to_parses(self, word, word_lower, parses):
+    def apply_to_parses(self, word: str, word_lower: str, parses: List[Parse]) -> List[Parse]:
         if not parses:
             return parses
 
@@ -97,7 +98,7 @@ class ProbabilityEstimator:
             in zip(parses, probs)
         ], key=_score_getter, reverse=True)
 
-    def apply_to_tags(self, word, word_lower, tags):
+    def apply_to_tags(self, word: str, word_lower: str, tags: List[tagset.OpencorporaTag]) -> List[tagset.OpencorporaTag]:
         if not tags:
             return tags
         return sorted(tags,
@@ -165,6 +166,11 @@ def lang_dict_path(lang):
     )
 
 
+class _Unit(NamedTuple):
+    analyzer: BaseAnalyzerUnit
+    is_terminal: bool
+
+
 class MorphAnalyzer:
     """
     Morphological analyzer for Russian language.
@@ -205,6 +211,8 @@ class MorphAnalyzer:
     char_substitutes = None
 
     _lock = threading.RLock()
+    _units: List[_Unit]
+    _result_type: Union[Type[Parse], None]
 
     def __init__(self, path=None, lang=None, result_type=Parse, units=None,
                  probability_estimator_cls=auto, char_substitutes=auto):
@@ -326,7 +334,7 @@ class MorphAnalyzer:
 
         (or plain tuples if ``result_type=None`` was used in constructor).
         """
-        res = []
+        res: List[Parse] = []
         seen = set()
         word_lower = word.lower()
 
@@ -344,7 +352,7 @@ class MorphAnalyzer:
 
         return [self._result_type(*p) for p in res]
 
-    def tag(self, word):
+    def tag(self, word: str) -> List[tagset.OpencorporaTag]:
         res = []
         seen = set()
         word_lower = word.lower()
@@ -359,7 +367,7 @@ class MorphAnalyzer:
             res = self.prob_estimator.apply_to_tags(word, word_lower, res)
         return res
 
-    def normal_forms(self, word):
+    def normal_forms(self, word: str) -> List[str]:
         """
         Return a list of word normal forms.
         """
