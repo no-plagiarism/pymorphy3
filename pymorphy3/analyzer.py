@@ -32,10 +32,7 @@ class Parse(_Parse):
     """
 
     _morph: "MorphAnalyzer" = None
-    """ :type _morph: MorphAnalyzer """
-
-    _dict = None
-    """ :type _dict: pymorphy3.opencorpora_dict.Dictionary """
+    _dict: opencorpora_dict.Dictionary = None
 
     def inflect(self, required_grammemes: Set[str]) -> Union["Parse", None]:
         res = self._morph._inflect(self, required_grammemes)
@@ -452,10 +449,7 @@ class MorphAnalyzer:
         )
 
     @property
-    def TagClass(self):
-        """
-        :rtype: pymorphy3.tagset.OpencorporaTag
-        """
+    def TagClass(self) -> tagset.OpencorporaTag:
         return self.dictionary.Tag
 
     def cyr2lat(self, tag_or_grammeme):

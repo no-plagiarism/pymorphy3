@@ -3,12 +3,17 @@ Analyzer units for unknown words with hyphens
 ---------------------------------------------
 """
 
+from typing import TYPE_CHECKING
+
 from pymorphy3.dawg import PrefixMatcher
 from pymorphy3.units.base import AnalogyAnalyzerUnit, BaseAnalyzerUnit
 from pymorphy3.units.utils import (add_parse_if_not_seen,
                                    replace_methods_stack,
                                    with_prefix, with_suffix,
                                    without_fixed_prefix, without_fixed_suffix)
+
+if TYPE_CHECKING:
+    from pymorphy3.tagset import OpencorporaTag
 
 
 class HyphenSeparatedParticleAnalyzer(AnalogyAnalyzerUnit):
@@ -253,8 +258,7 @@ class HyphenatedWordsAnalyzer(BaseAnalyzerUnit):
 
         return result
 
-    def _similarity_features(self, tag):
-        """ :type tag: pymorphy2.tagset.OpencorporaTag """
+    def _similarity_features(self, tag: "OpencorporaTag"):
         return replace_grammemes(
             tag.grammemes & self._FEATURE_GRAMMEMES,
             {'gen1': 'gent', 'loc1': 'loct'}
