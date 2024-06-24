@@ -15,6 +15,7 @@ class Dictionary:
     OpenCorpora dictionary wrapper class.
     """
     _data: LoadedDictionary
+
     def __init__(self, path: str):
 
         logger.info("Loading dictionaries from %s", path)

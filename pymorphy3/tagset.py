@@ -393,7 +393,7 @@ class OpencorporaTag:
             msg = "The class was not properly initialized."
             raise RuntimeError(msg)
 
-    def updated_grammemes(self, required: Set[str]) -> Set[str]:
+    def updated_grammemes(self, required: Union[FrozenSet[str], Set[str]]) -> FrozenSet[str]:
         """
         Return a new set of grammemes with ``required`` grammemes added
         and incompatible grammemes removed.
