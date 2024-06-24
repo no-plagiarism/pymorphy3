@@ -73,7 +73,7 @@ class ProbabilityEstimator:
         cpd_path = os.path.join(dict_path, 'p_t_given_w.intdawg')
         self.p_t_given_w = ConditionalProbDistDAWG().load(cpd_path)
 
-    def apply_to_parses(self, word: str, word_lower: str, parses: List[Parse]) -> List[Parse]:
+    def apply_to_parses(self, word: str, word_lower: str, parses: List[Parse]) -> Union[List[Parse], List[_Parse]]:
         if not parses:
             return parses
 
@@ -84,13 +84,13 @@ class ProbabilityEstimator:
             # no P(t|w) information is available; return normalized estimate
             k = 1.0 / sum(map(_score_getter, parses))
             return [
-                (word, tag, normal_form, score*k, methods_stack)
+                _Parse(word, tag, normal_form, score*k, methods_stack)
                 for (word, tag, normal_form, score, methods_stack) in parses
             ]
 
         # replace score with P(t|w) probability
         return sorted([
-            (word, tag, normal_form, prob, methods_stack)
+            _Parse(word, tag, normal_form, prob, methods_stack)
             for (word, tag, normal_form, score, methods_stack), prob
             in zip(parses, probs)
         ], key=_score_getter, reverse=True)
@@ -256,10 +256,10 @@ class MorphAnalyzer:
         for item in units_unbound:
             if isinstance(item, (list, tuple)):
                 for unit in item[:-1]:
-                    self._units.append((self._bound_unit(unit), False))
-                self._units.append((self._bound_unit(item[-1]), True))
+                    self._units.append(_Unit(self._bound_unit(unit), False))
+                self._units.append(_Unit(self._bound_unit(item[-1]), True))
             else:
-                self._units.append((self._bound_unit(item), True))
+                self._units.append(_Unit(self._bound_unit(item), True))
 
     def _init_char_substitutes(self, char_substitutes):
         if char_substitutes is auto:
