@@ -73,9 +73,9 @@ class ProbabilityEstimator:
         cpd_path = os.path.join(dict_path, 'p_t_given_w.intdawg')
         self.p_t_given_w = ConditionalProbDistDAWG().load(cpd_path)
 
-    def apply_to_parses(self, word: str, word_lower: str, parses: List[Parse]) -> Union[List[Parse], List[_Parse]]:
+    def apply_to_parses(self, word: str, word_lower: str, parses: List[Parse]) -> List[_Parse]:
         if not parses:
-            return parses
+            return []
 
         probs = [self.p_t_given_w.prob(word_lower, tag)
                 for (word, tag, normal_form, score, methods_stack) in parses]
