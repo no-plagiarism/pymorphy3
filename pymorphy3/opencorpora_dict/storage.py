@@ -143,7 +143,7 @@ def save_compiled_dict(compiled_dict, out_path, source_name, language_code):
     ])
 
 
-def load_meta(filename) -> Union[collections.OrderedDict, Dict]:
+def load_meta(filename) -> Dict:
     """ Load metadata. """
     meta = json_read(filename, parse_float=str)
     if hasattr(collections, 'OrderedDict'):
