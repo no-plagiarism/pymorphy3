@@ -21,7 +21,7 @@ auto = object()
 class _Parse(NamedTuple):
     word: str
     tag: tagset.OpencorporaTag
-    normal_for: str
+    normal_form: str
     score: float
     methods_stack: tuple
 
