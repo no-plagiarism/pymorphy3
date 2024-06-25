@@ -8,7 +8,7 @@ import datetime
 import logging
 import os
 import struct
-from typing import NamedTuple, Union, List, Dict
+from typing import NamedTuple, Union, List, Dict, Type
 
 import pymorphy3
 from pymorphy3 import tagset
@@ -27,7 +27,7 @@ class LoadedDictionary(NamedTuple):
     paradigms: List[array.array]
     words: dawg.WordsDawg
     prediction_suffixes_dawgs: List[dawg.PredictionSuffixesDAWG]
-    Tag: type[tagset.OpencorporaTag]
+    Tag: Type[tagset.OpencorporaTag]
     paradigm_prefixes: List[str]
 
 
