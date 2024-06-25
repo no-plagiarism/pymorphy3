@@ -3,6 +3,7 @@ import pickle
 import pytest
 
 import pymorphy3
+import pymorphy3.analyzer
 from pymorphy3 import lang
 from pymorphy3.units.by_analogy import UnknownPrefixAnalyzer, KnownPrefixAnalyzer
 from pymorphy3.units.by_hyphen import HyphenatedWordsAnalyzer
@@ -234,22 +235,22 @@ class TestUtils:
 
 
 class TestParseResultClass:
-    def assertNotTuples(self, parses):
-        assert all(type(p) is not tuple for p in parses)
+    def assertParseClasses(self, parses):
+        assert all(type(p) is pymorphy3.analyzer.Parse for p in parses)
 
-    def assertAllTuples(self, parses):
-        assert all(type(p) is tuple for p in parses)
+    def assertSimpleNamedTuples(self, parses):
+        assert all(type(p) is pymorphy3.analyzer._Parse for p in parses)
 
-    def test_namedtuples(self, morph):
-        self.assertNotTuples(morph.parse('кот'))
-        # self.assertNotTuples(morph.inflect('кот', {'plur'}))
-        # self.assertNotTuples(morph.decline('кот'))
+    def test_namedtuples(self, morph: pymorphy3.MorphAnalyzer):
+        self.assertParseClasses(morph.parse('кот'))
+        # self.assertParseClasses(morph.inflect('кот', {'plur'}))
+        # self.assertParseClasses(morph.decline('кот'))
 
     def test_plain_tuples(self):
         morph_plain = pymorphy3.MorphAnalyzer(result_type=None)
-        self.assertAllTuples(morph_plain.parse('кот'))
-        # self.assertAllTuples(morph_plain.inflect('кот', {'plur'}))
-        # self.assertAllTuples(morph_plain.decline('кот'))
+        self.assertSimpleNamedTuples(morph_plain.parse('кот'))
+        # self.assertSimpleNamedTuples(morph_plain.inflect('кот', {'plur'}))
+        # self.assertSimpleNamedTuples(morph_plain.decline('кот'))
 
 
 class TestLatinPredictor:
