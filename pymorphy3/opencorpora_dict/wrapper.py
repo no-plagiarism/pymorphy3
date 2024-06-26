@@ -1,6 +1,11 @@
 import logging
+import array
 
-from .storage import load_dict
+from .storage import load_dict, LoadedDictionary
+from typing import TYPE_CHECKING, Union
+
+if TYPE_CHECKING:
+    from pymorphy3 import dawg
 
 logger = logging.getLogger(__name__)
 
@@ -9,8 +14,9 @@ class Dictionary:
     """
     OpenCorpora dictionary wrapper class.
     """
+    _data: LoadedDictionary
 
-    def __init__(self, path):
+    def __init__(self, path: str):
 
         logger.info("Loading dictionaries from %s", path)
 
@@ -23,11 +29,11 @@ class Dictionary:
         self.gramtab = self._data.gramtab
         self.paradigm_prefixes = self._data.paradigm_prefixes
         self.suffixes = self._data.suffixes
-        self.words = self._data.words
+        self.words: dawg.WordsDawg = self._data.words
         self.prediction_suffixes_dawgs = self._data.prediction_suffixes_dawgs
         self.meta = self._data.meta
         self.Tag = self._data.Tag
-        self.lang = self.meta.get('language_code')
+        self.lang: Union[str, None] = self.meta.get('language_code')
 
         # extra attributes
         self.path = path
@@ -64,7 +70,7 @@ class Dictionary:
             )
         return res
 
-    def build_normal_form(self, para_id, idx, fixed_word):
+    def build_normal_form(self, para_id: int, idx: int, fixed_word: str) -> str:
         """
         Build a normal form.
         """
@@ -85,7 +91,7 @@ class Dictionary:
 
         return normal_prefix + stem + normal_suffix
 
-    def build_stem(self, paradigm, idx, fixed_word):
+    def build_stem(self, paradigm: array.array, idx: int, fixed_word: str) -> str:
         """
         Return word stem (given a word, paradigm and the word index).
         """

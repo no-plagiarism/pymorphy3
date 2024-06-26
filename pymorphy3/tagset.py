@@ -3,6 +3,8 @@ Utils for working with grammatical tags.
 """
 import collections
 from sys import intern
+from typing import Union, FrozenSet, Set, Dict
+
 
 # a bit of *heavy* magic...
 class _select_grammeme_from:
@@ -291,7 +293,7 @@ class OpencorporaTag:
     voice = _select_grammeme_from(VOICES)
 
     @property
-    def grammemes(self):
+    def grammemes(self) -> FrozenSet[str]:
         """ A frozenset with grammemes for this tag. """
         if self._grammemes_cache is None:
             self._grammemes_cache = frozenset(self._grammemes_tuple)
@@ -322,7 +324,7 @@ class OpencorporaTag:
         """ Return Cyrillic representation for ``tag_or_grammeme`` string """
         return _translate_tag(tag_or_grammeme, cls._LAT2CYR)
 
-    def __contains__(self, grammeme):
+    def __contains__(self, grammeme: Union[str, Set[str]]) -> bool:
 
         # {'NOUN', 'sing'} in tag
         if isinstance(grammeme, (set, frozenset)):
@@ -366,19 +368,19 @@ class OpencorporaTag:
     def __reduce__(self):
         return self.__class__, (self._str,), None
 
-    def is_productive(self):
+    def is_productive(self) -> bool:
         return not self.grammemes & self._NON_PRODUCTIVE_GRAMMEMES
 
-    def _is_unknown(self):
+    def _is_unknown(self) -> bool:
         return self._POS not in self.PARTS_OF_SPEECH
 
     @classmethod
-    def grammeme_is_known(cls, grammeme):
+    def grammeme_is_known(cls, grammeme: str) -> bool:
         cls._assert_grammemes_initialized()
         return grammeme in cls.KNOWN_GRAMMEMES
 
     @classmethod
-    def _assert_grammemes_are_known(cls, grammemes):
+    def _assert_grammemes_are_known(cls, grammemes: Set[str]) -> None:
         if not grammemes <= cls.KNOWN_GRAMMEMES:
             cls._assert_grammemes_initialized()
             unknown = grammemes - cls.KNOWN_GRAMMEMES
@@ -386,12 +388,12 @@ class OpencorporaTag:
             raise ValueError(f"Grammemes are unknown: {{{unknown_repr}}}")
 
     @classmethod
-    def _assert_grammemes_initialized(cls):
+    def _assert_grammemes_initialized(cls) -> None:
         if not cls.KNOWN_GRAMMEMES:
             msg = "The class was not properly initialized."
             raise RuntimeError(msg)
 
-    def updated_grammemes(self, required):
+    def updated_grammemes(self, required: Union[FrozenSet[str], Set[str]]) -> FrozenSet[str]:
         """
         Return a new set of grammemes with ``required`` grammemes added
         and incompatible grammemes removed.
@@ -404,14 +406,14 @@ class OpencorporaTag:
         return new_grammemes
 
     @classmethod
-    def fix_rare_cases(cls, grammemes):
+    def fix_rare_cases(cls, grammemes: Set[str]) -> FrozenSet[str]:
         """
         Replace rare cases (loc2/voct/...) with common ones (loct/nomn/...).
         """
         return frozenset(cls.RARE_CASES.get(g, g) for g in grammemes)
 
     @classmethod
-    def add_grammemes_to_known(cls, lat, cyr, overwrite=True):
+    def add_grammemes_to_known(cls, lat: str, cyr: str, overwrite: bool = True) -> None:
         if not overwrite and lat in cls.KNOWN_GRAMMEMES:
             return
         cls.KNOWN_GRAMMEMES.add(lat)
@@ -471,7 +473,7 @@ class OpencorporaTag:
     def _from_internal_grammeme(cls, grammeme):
         return grammeme
 
-    def numeral_agreement_grammemes(self, num):
+    def numeral_agreement_grammemes(self, num: int) -> Set[str]:
         if (num % 10 == 1) and (num % 100 != 11):
             index = 0
         elif (num % 10 >= 2) and (num % 10 <= 4) and (num % 100 < 10 or num % 100 >= 20):
@@ -566,7 +568,7 @@ class CyrillicOpencorporaTag(OpencorporaTag):
             cls._GRAMMEME_ALIAS_MAP[name] = alias
 
 
-def _translate_tag(tag, mapping):
+def _translate_tag(tag: Union[OpencorporaTag, str], mapping: Dict) -> str:
     """
     Translate ``tag`` string according to ``mapping``, assuming grammemes
     are separated by commas or whitespaces. Commas/whitespaces positions

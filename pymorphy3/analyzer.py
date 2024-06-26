@@ -5,17 +5,25 @@ import operator
 import os
 import threading
 import warnings
+from typing import NamedTuple, Union, Set, List, Type
 
 import pymorphy3.lang
 from pymorphy3 import opencorpora_dict
+from pymorphy3 import tagset
 from pymorphy3.dawg import ConditionalProbDistDAWG
+from pymorphy3.units.base import BaseAnalyzerUnit
 
 logger = logging.getLogger(__name__)
-
-_Parse = collections.namedtuple('Parse', 'word, tag, normal_form, score, methods_stack')
-
 _score_getter = operator.itemgetter(3)
 auto = object()
+
+
+class _Parse(NamedTuple):
+    word: str
+    tag: tagset.OpencorporaTag
+    normal_form: str
+    score: float
+    methods_stack: tuple
 
 
 class Parse(_Parse):
@@ -23,13 +31,10 @@ class Parse(_Parse):
     Parse result wrapper.
     """
 
-    _morph = None
-    """ :type _morph: MorphAnalyzer """
+    _morph: "MorphAnalyzer" = None
+    _dict: opencorpora_dict.Dictionary = None
 
-    _dict = None
-    """ :type _dict: pymorphy3.opencorpora_dict.Dictionary """
-
-    def inflect(self, required_grammemes):
+    def inflect(self, required_grammemes: Set[str]) -> Union["Parse", None]:
         res = self._morph._inflect(self, required_grammemes)
         return None if not res else res[0]
 
@@ -68,9 +73,9 @@ class ProbabilityEstimator:
         cpd_path = os.path.join(dict_path, 'p_t_given_w.intdawg')
         self.p_t_given_w = ConditionalProbDistDAWG().load(cpd_path)
 
-    def apply_to_parses(self, word, word_lower, parses):
+    def apply_to_parses(self, word: str, word_lower: str, parses: List[Parse]) -> List[_Parse]:
         if not parses:
-            return parses
+            return []
 
         probs = [self.p_t_given_w.prob(word_lower, tag)
                 for (word, tag, normal_form, score, methods_stack) in parses]
@@ -79,18 +84,18 @@ class ProbabilityEstimator:
             # no P(t|w) information is available; return normalized estimate
             k = 1.0 / sum(map(_score_getter, parses))
             return [
-                (word, tag, normal_form, score*k, methods_stack)
+                _Parse(word, tag, normal_form, score*k, methods_stack)
                 for (word, tag, normal_form, score, methods_stack) in parses
             ]
 
         # replace score with P(t|w) probability
         return sorted([
-            (word, tag, normal_form, prob, methods_stack)
+            _Parse(word, tag, normal_form, prob, methods_stack)
             for (word, tag, normal_form, score, methods_stack), prob
             in zip(parses, probs)
         ], key=_score_getter, reverse=True)
 
-    def apply_to_tags(self, word, word_lower, tags):
+    def apply_to_tags(self, word: str, word_lower: str, tags: List[tagset.OpencorporaTag]) -> List[tagset.OpencorporaTag]:
         if not tags:
             return tags
         return sorted(tags,
@@ -158,6 +163,11 @@ def lang_dict_path(lang):
     )
 
 
+class _Unit(NamedTuple):
+    analyzer: BaseAnalyzerUnit
+    is_terminal: bool
+
+
 class MorphAnalyzer:
     """
     Morphological analyzer for Russian language.
@@ -198,6 +208,8 @@ class MorphAnalyzer:
     char_substitutes = None
 
     _lock = threading.RLock()
+    _units: List[_Unit]
+    _result_type: Union[Type[Parse], None]
 
     def __init__(self, path=None, lang=None, result_type=Parse, units=None,
                  probability_estimator_cls=auto, char_substitutes=auto):
@@ -244,10 +256,10 @@ class MorphAnalyzer:
         for item in units_unbound:
             if isinstance(item, (list, tuple)):
                 for unit in item[:-1]:
-                    self._units.append((self._bound_unit(unit), False))
-                self._units.append((self._bound_unit(item[-1]), True))
+                    self._units.append(_Unit(self._bound_unit(unit), False))
+                self._units.append(_Unit(self._bound_unit(item[-1]), True))
             else:
-                self._units.append((self._bound_unit(item), True))
+                self._units.append(_Unit(self._bound_unit(item), True))
 
     def _init_char_substitutes(self, char_substitutes):
         if char_substitutes is auto:
@@ -292,7 +304,7 @@ class MorphAnalyzer:
         return lang_dict_path(lang)
 
     @classmethod
-    def choose_language(cls, dictionary, lang):
+    def choose_language(cls, dictionary: opencorpora_dict.Dictionary, lang: Union[str, None]) -> str:
         if lang is None:
             if dictionary.lang is None:
                 # this could be e.g. old pymorphy3 dictionary
@@ -310,7 +322,7 @@ class MorphAnalyzer:
 
         return lang
 
-    def parse(self, word):
+    def parse(self, word: str) -> List[Parse]:
         """
         Analyze the word and return a list of :class:`pymorphy3.analyzer.Parse`
         namedtuples:
@@ -319,7 +331,7 @@ class MorphAnalyzer:
 
         (or plain tuples if ``result_type=None`` was used in constructor).
         """
-        res = []
+        res: List[Parse] = []
         seen = set()
         word_lower = word.lower()
 
@@ -337,7 +349,7 @@ class MorphAnalyzer:
 
         return [self._result_type(*p) for p in res]
 
-    def tag(self, word):
+    def tag(self, word: str) -> List[tagset.OpencorporaTag]:
         res = []
         seen = set()
         word_lower = word.lower()
@@ -352,7 +364,7 @@ class MorphAnalyzer:
             res = self.prob_estimator.apply_to_tags(word, word_lower, res)
         return res
 
-    def normal_forms(self, word):
+    def normal_forms(self, word: str) -> List[str]:
         """
         Return a list of word normal forms.
         """
@@ -368,11 +380,11 @@ class MorphAnalyzer:
 
     # ==== inflection ========
 
-    def get_lexeme(self, form):
+    def get_lexeme(self, form: Parse):
         """
         Return the lexeme this parse belongs to.
         """
-        methods_stack = form[4]
+        methods_stack = form.methods_stack
         last_method = methods_stack[-1]
         result = last_method[0].get_lexeme(form)
 
@@ -380,7 +392,7 @@ class MorphAnalyzer:
             return result
         return [self._result_type(*p) for p in result]
 
-    def _inflect(self, form, required_grammemes):
+    def _inflect(self, form: Parse, required_grammemes: Set[str]):
         possible_results = [f for f in self.get_lexeme(form)
                             if required_grammemes <= f[1].grammemes]
 
@@ -414,7 +426,7 @@ class MorphAnalyzer:
             else:
                 yield self._result_type(*parse)
 
-    def word_is_known(self, word, strict=False):
+    def word_is_known(self, word: str, strict: bool = False) -> bool:
         """
         Check if a ``word`` is in the dictionary.
 
@@ -437,10 +449,7 @@ class MorphAnalyzer:
         )
 
     @property
-    def TagClass(self):
-        """
-        :rtype: pymorphy3.tagset.OpencorporaTag
-        """
+    def TagClass(self) -> tagset.OpencorporaTag:
         return self.dictionary.Tag
 
     def cyr2lat(self, tag_or_grammeme):
