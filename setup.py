@@ -32,7 +32,7 @@ extras_require = {
     'fast': []
 }
 if is_cpython:
-    extras_require['fast'].append("DAWG >= 0.8")
+    extras_require['fast'].append("DAWG2 >= 0.8")
 
 
 setup(
