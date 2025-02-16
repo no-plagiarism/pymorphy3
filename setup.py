@@ -9,19 +9,11 @@ def get_version():
         return f.readline().split("=")[1].strip(' "\n')
 
 
-# TODO: use environment markers instead of Python code in order to
-# allow building proper wheels. Markers are not enabled right now because
-# of setuptools/wheel incompatibilities and the 'pip >= 6.0' requirement.
-
-# extras_require = {
-#     'fast:platform_python_implementation==CPython': ["DAWG>=0.7.7"],
-# }
-
 is_cpython = platform.python_implementation() == 'CPython'
 
 
 install_requires = [
-    'dawg-python >= 0.7.1',
+    'dawg2-python >= 0.8.0',
     'pymorphy3-dicts-ru',
     'setuptools >= 68.2.2 ; python_version >= "3.12"',
 ]
@@ -29,10 +21,8 @@ install_requires = [
 
 extras_require = {
     'CLI': ['click'],
-    'fast': []
+    'fast': ['DAWG2 >= 0.9.0, < 1.0.0 ; platform_python_implementation == "CPython"']
 }
-if is_cpython:
-    extras_require['fast'].append("DAWG >= 0.8")
 
 
 setup(
