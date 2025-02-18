@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import platform
-
 from setuptools import setup
 
 
@@ -9,19 +7,8 @@ def get_version():
         return f.readline().split("=")[1].strip(' "\n')
 
 
-# TODO: use environment markers instead of Python code in order to
-# allow building proper wheels. Markers are not enabled right now because
-# of setuptools/wheel incompatibilities and the 'pip >= 6.0' requirement.
-
-# extras_require = {
-#     'fast:platform_python_implementation==CPython': ["DAWG>=0.7.7"],
-# }
-
-is_cpython = platform.python_implementation() == 'CPython'
-
-
 install_requires = [
-    'dawg-python >= 0.7.1',
+    'dawg2-python >= 0.8.0',
     'pymorphy3-dicts-ru',
     'setuptools >= 68.2.2 ; python_version >= "3.12"',
 ]
@@ -29,10 +16,8 @@ install_requires = [
 
 extras_require = {
     'CLI': ['click'],
-    'fast': []
+    'fast': ['DAWG2 >= 0.9.0, < 1.0.0 ; platform_python_implementation == "CPython"']
 }
-if is_cpython:
-    extras_require['fast'].append("DAWG >= 0.8")
 
 
 setup(
@@ -69,13 +54,11 @@ setup(
         'Natural Language :: Russian',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
