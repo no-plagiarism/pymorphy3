@@ -1,15 +1,10 @@
 #!/usr/bin/env python
-import platform
-
 from setuptools import setup
 
 
 def get_version():
     with open("pymorphy3/version.py", "rt") as f:
         return f.readline().split("=")[1].strip(' "\n')
-
-
-is_cpython = platform.python_implementation() == 'CPython'
 
 
 install_requires = [
