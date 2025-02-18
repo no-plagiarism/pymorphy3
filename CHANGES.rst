@@ -1,7 +1,57 @@
 
-История изменений
-=================
+History of Changes / История изменений
+======================================
+2.0.3 (2025-02-19)
+------------------
+- Enable "fast" extras for Python > 3.9 and add tests
 
+2.0.2 (2024-06-27)
+------------------
+- Switch codecov to v4
+- Add typing
+
+2.0.1 (2024-01-13)
+------------------
+- Fix DeprecationWarning: pkg_resources is deprecated as an API
+
+2.0.0 (2023-12-30)
+------------------
+- Drop support for Python 2 & 3.5 and clean up codebase
+
+1.3.1 (2023-12-10)
+------------------
+- Update version to publish to pip
+
+1.3.0 (2023-12-10)
+------------------
+- Add setuptools for Python 3.12 support, run tests on Python 3.12
+- Switch CLI dependency from docopt to Click and make it optional
+
+1.2.1 (2023-09-10)
+------------------
+- Change docopt to updated fork
+
+1.2.0 (2022-12-27)
+------------------
+- Correct name of original author
+- Add CI
+- Support for Python 3.11
+
+1.1.1 (2022-12-01)
+------------------
+- Create AUTHORS.rst, change LICENSE.txt to MIT
+
+1.1.0 (2022-01-19)
+------------------
+- Add pymorphy3-dicts-ru as dependency
+
+1.0.1 (2022-01-19)
+------------------
+- Change version and dict_path
+
+1.0.0 (2022-01-19)
+------------------
+- Change dicts path
 
 0.9.1 (2020-09-27)
 ------------------
