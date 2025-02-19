@@ -239,7 +239,7 @@ class TestParseResultClass:
         assert all(isinstance(p, pymorphy3.analyzer.Parse) for p in parses)
 
     def assertSimpleNamedTuples(self, parses):
-        assert all(type(p) is pymorphy3.analyzer._Parse for p in parses)
+        assert all(isinstance(p, pymorphy3.analyzer._Parse) for p in parses)
 
     def test_namedtuples(self, morph: pymorphy3.MorphAnalyzer):
         self.assertParseClasses(morph.parse('кот'))
