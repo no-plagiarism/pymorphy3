@@ -184,9 +184,8 @@ def test_has_proper_lexemes(lexeme, morph):
     lexeme_words = get_lexeme_words(lexeme)
 
     variants = _lexemes_for_word(lexeme_words[0], morph)
-    if lexeme_words not in variants:
-        variants_repr = "\n".join([" ".join(v) for v in variants])
-        assert False, f"{lexeme} not in \n{variants_repr}"
+    variants_repr = "\n".join([" ".join(v) for v in variants])
+    assert lexeme_words in variants, f"{lexeme} not in \n{variants_repr}"
 
 
 @pytest.mark.parametrize("lexeme", LEXEMES)
@@ -229,11 +228,10 @@ def test_full_lexemes(lexeme, morph):
 
 
 def assert_has_full_lexeme(word, forms, morph):
-    for p in morph.parse(word):
-        lexeme_forms = [(f.word, str(f.tag)) for f in p.lexeme]
-        if lexeme_forms == forms:
-            return
-    raise AssertionError(f"Word {word} doesn't have lexeme {forms}")
+    assert any(
+        [(f.word, str(f.tag)) for f in p.lexeme] == forms
+        for p in morph.parse(word)
+    ), f"Word {word} doesn't have lexeme {forms}"
 
 
 def _lexemes_for_word(word, morph):
