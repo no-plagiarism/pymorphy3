@@ -61,7 +61,7 @@ class HyphenSeparatedParticleAnalyzer(AnalogyAnalyzerUnit):
 
     def tag(self, word, word_lower, seen_tags):
         result = []
-        for unsuffixed_word, particle in self.possible_splits(word_lower):
+        for unsuffixed_word, _ in self.possible_splits(word_lower):
             result.extend(self.morph.tag(unsuffixed_word))
             # If a word ends with with one of the particles,
             # it can't ends with an another.
@@ -178,17 +178,17 @@ class HyphenatedWordsAnalyzer(BaseAnalyzerUnit):
         left_parses = self.morph.parse(left)
         right_parses = self.morph.parse(right)
 
-        result = self._parse_as_variable_both(left_parses, right_parses, seen_parses)
+        result = self._parse_as_variable_both(left_parses, right_parses)
 
         # We copy `seen_parses` to preserve parses even if similar parses
         # were observed at previous step (they may have different lexemes).
         _seen = seen_parses.copy()
-        result.extend(self._parse_as_fixed_left(right_parses, _seen, left))
+        result.extend(self._parse_as_fixed_left(right_parses, left))
         seen_parses.update(_seen)
 
         return result
 
-    def _parse_as_fixed_left(self, right_parses, seen, left):
+    def _parse_as_fixed_left(self, right_parses, left):
         """
         Step 1: Assume that the left part is an immutable prefix.
         Examples: интернет-магазин, воздушно-капельный
@@ -214,7 +214,7 @@ class HyphenatedWordsAnalyzer(BaseAnalyzerUnit):
 
         return result
 
-    def _parse_as_variable_both(self, left_parses, right_parses, seen):
+    def _parse_as_variable_both(self, left_parses, right_parses):
         """
         Step 2: if left and right can be parsed the same way,
         then it may be the case that both parts should be inflected.

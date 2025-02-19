@@ -22,7 +22,10 @@ class Dictionary:
 
         self._data = load_dict(path)
 
-        logger.info("format: %(format_version)s, revision: %(source_revision)s, updated: %(compiled_at)s", self._data.meta)
+        logger.info(
+            "format: %(format_version)s, revision: %(source_revision)s, updated: %(compiled_at)s",
+            self._data.meta
+        )
 
         # attributes from opencorpora_dict.storage.LoadedDictionary
         self.paradigms = self._data.paradigms
