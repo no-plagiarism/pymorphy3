@@ -12,11 +12,7 @@ def get_mem_usage():
     """
     import psutil
     proc = psutil.Process(os.getpid())
-    try:
-        return proc.memory_info().rss
-    except AttributeError:
-        # psutil < 2.x
-        return proc.get_memory_info()[0]
+    return proc.memory_info().rss
 
 
 def combinations_of_all_lengths(it):
