@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import pytest
 from click.testing import CliRunner
@@ -7,7 +8,10 @@ from pymorphy3 import cli
 
 
 def run_pymorphy3(args=()):
-    runner = CliRunner(mix_stderr = False)
+    if sys.version_info >= (3, 10):
+        runner = CliRunner()
+    else:
+        runner = CliRunner(mix_stderr = False)
     results = runner.invoke(cli.main, args)
 
     return results.stdout, results.stderr
