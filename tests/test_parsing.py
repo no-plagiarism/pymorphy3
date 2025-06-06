@@ -171,7 +171,7 @@ def _test_has_parse(parses):
     @run_for_all(parses)
     def test_case(word, normal_form, tag, morph):
         parse = morph.parse(word)
-        assert_parse_is_correct(parse, word, normal_form, tag)
+        assert_parse_is_correct(parse, normal_form, tag)
 
     return test_case
 
