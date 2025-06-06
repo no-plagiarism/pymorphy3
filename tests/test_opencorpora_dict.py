@@ -111,7 +111,7 @@ class TestToParadigm:
             ["поярчей", "COMP,Qual Cmp2,V-ej"],
             ["наиярчайший", "ADJF,Supr,Qual masc,sing,nomn"],
         ]
-        stem, forms = _to_paradigm(lexeme, lang.ru.PARADIGM_PREFIXES)
+        stem = _to_paradigm(lexeme, lang.ru.PARADIGM_PREFIXES)[0]
         assert stem == 'ярч'
 
     def test_multiple_prefixes_2(self):

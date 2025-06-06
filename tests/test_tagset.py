@@ -131,10 +131,10 @@ class TestAttributes:
         tag = Tag('NOUN,inan,masc plur,accs')
 
         with pytest.raises(ValueError):
-            tag.POS == 'hello'
+            assert tag.POS == 'hello'
 
         with pytest.raises(ValueError):
-            tag.POS == 'noun'
+            assert tag.POS == 'noun'
 
     def test_attributes_as_set_items(self, Tag):
         tag = Tag('NOUN,inan,masc plur,accs')
