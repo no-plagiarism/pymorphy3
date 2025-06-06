@@ -1,12 +1,10 @@
 import concurrent.futures
 import random
 
-from test_parsing import PARSES
-from utils import assert_parse_is_correct
-
 import pymorphy3
 
-
+from test_parsing import PARSES
+from utils import assert_parse_is_correct
 def _check_analyzer(morph, parses):
     for word, normal_form, tag in parses:
         parse = morph.parse(word)
