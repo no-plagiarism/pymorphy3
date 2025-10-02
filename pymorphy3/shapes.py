@@ -1,6 +1,5 @@
 import re
 import unicodedata
-import warnings
 
 
 _latin_letters_cache = {}
@@ -8,8 +7,6 @@ def is_latin_char(uchr):
     try:
         return _latin_letters_cache[uchr]
     except KeyError:
-        if isinstance(uchr, bytes):
-            uchr = uchr.decode('ascii')
         is_latin = 'LATIN' in unicodedata.name(uchr)
         return _latin_letters_cache.setdefault(uchr, is_latin)
 
@@ -54,9 +51,6 @@ def is_punctuation(token):
         False
 
     """
-    if isinstance(token, bytes):  # python 2.x ascii str
-        token = token.decode('ascii')
-
     return (
         bool(token) and
         not token.isspace() and
@@ -139,15 +133,6 @@ def restore_capitalization(word, example):
         return '-'.join(results)
 
     return _make_the_same_case(word, example)
-
-
-def restore_word_case(word, example):
-    """ This function is renamed to ``restore_capitalization`` """
-    warnings.warn(
-        "`restore_word_case` function is renamed to `restore_capitalization`; "
-        "old alias will be removed in future releases.",
-    )
-    return restore_capitalization(word, example)
 
 
 def _make_the_same_case(word, example):

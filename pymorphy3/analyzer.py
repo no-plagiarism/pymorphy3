@@ -1,4 +1,3 @@
-import collections
 import heapq
 import logging
 import operator
@@ -77,14 +76,16 @@ class ProbabilityEstimator:
         if not parses:
             return []
 
-        probs = [self.p_t_given_w.prob(word_lower, tag)
-                for (word, tag, normal_form, score, methods_stack) in parses]
+        probs = [
+            self.p_t_given_w.prob(word_lower, tag)
+            for (word, tag, normal_form, score, methods_stack) in parses
+        ]
 
         if sum(probs) == 0:
             # no P(t|w) information is available; return normalized estimate
             k = 1.0 / sum(map(_score_getter, parses))
             return [
-                _Parse(word, tag, normal_form, score*k, methods_stack)
+                _Parse(word, tag, normal_form, score * k, methods_stack)
                 for (word, tag, normal_form, score, methods_stack) in parses
             ]
 
@@ -95,7 +96,7 @@ class ProbabilityEstimator:
             in zip(parses, probs)
         ], key=_score_getter, reverse=True)
 
-    def apply_to_tags(self, word: str, word_lower: str, tags: List[tagset.OpencorporaTag]) -> List[tagset.OpencorporaTag]:
+    def apply_to_tags(self, word_lower: str, tags: List[tagset.OpencorporaTag]) -> List[tagset.OpencorporaTag]:
         if not tags:
             return tags
         return sorted(tags,
@@ -104,7 +105,7 @@ class ProbabilityEstimator:
         )
 
 
-def _iter_entry_points(*args, **kwargs):
+def _iter_entry_points(*args):
     """
     Finds entry points of installed packages, including ones installed
     after the current process is started.
@@ -352,7 +353,7 @@ class MorphAnalyzer:
                 break
 
         if self.prob_estimator is not None:
-            res = self.prob_estimator.apply_to_tags(word, word_lower, res)
+            res = self.prob_estimator.apply_to_tags(word_lower, res)
         return res
 
     def normal_forms(self, word: str) -> List[str]:
@@ -393,6 +394,7 @@ class MorphAnalyzer:
                                 if required_grammemes <= f[1].grammemes]
 
         grammemes = form[1].updated_grammemes(required_grammemes)
+
         def similarity(frm):
             tag = frm[1]
             return len(grammemes & tag.grammemes) - 0.1 * len(grammemes ^ tag.grammemes)
