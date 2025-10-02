@@ -7,8 +7,9 @@ import pytest
 
 def parse_lexemes(lexemes_txt):
     lexemes_txt = "".join(
-        line for line in lexemes_txt.strip().splitlines(True)
-             if not line.startswith("#")
+        line
+        for line in lexemes_txt.strip().splitlines(True)
+        if not line.startswith("#")
     )
     return lexemes_txt.split("\n\n")
 
@@ -186,7 +187,7 @@ def test_has_proper_lexemes(lexeme, morph):
     variants = _lexemes_for_word(lexeme_words[0], morph)
     if lexeme_words not in variants:
         variants_repr = "\n".join([" ".join(v) for v in variants])
-        assert False, f"{lexeme} not in \n{variants_repr}"
+        raise AssertionError(f"{lexeme} not in \n{variants_repr}")
 
 
 @pytest.mark.parametrize("lexeme", LEXEMES)
