@@ -7,7 +7,7 @@ Thumbs.db
 build/
 docs/_build
 dist/
-pymorphy2.egg-info
+*.egg-info
 stuff/
 htmlcov/
 .coverage
