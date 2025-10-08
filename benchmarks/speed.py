@@ -1,4 +1,3 @@
-import codecs
 import datetime
 import functools
 import logging
@@ -18,7 +17,7 @@ DATA_PATH = os.path.join(
 
 def load_words(path=DATA_PATH):
     words = []
-    with codecs.open(path, 'r', 'utf8') as f:
+    with open(path, 'r', encoding='utf8') as f:
         for line in f:
             word, count, ipm = line.split()
             count = int(count)

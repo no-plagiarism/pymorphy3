@@ -1,4 +1,3 @@
-import codecs
 import heapq
 import itertools
 import json
@@ -71,13 +70,13 @@ def json_write(filename, obj, **json_options):
 
     json_options.setdefault('ensure_ascii', False)
     json_options.setdefault('indent', 2)
-    with codecs.open(filename, 'w', 'utf8') as f:
+    with open(filename, 'w', encoding='utf8') as f:
         json.dump(obj, f, **json_options)
 
 
 def json_read(filename, **json_options):
     """ Read an object from a json file ``filename`` """
-    with codecs.open(filename, 'r', 'utf8') as f:
+    with open(filename, 'r', encoding='utf8') as f:
         return json.load(f, **json_options)
 
 
