@@ -24,6 +24,7 @@ reports
 *.so
 
 .tox
+.hypothesis/
 MANIFEST
 
 stuff

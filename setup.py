@@ -27,7 +27,7 @@ setup(
     author_email='d9nich@pm.me',
     url='https://github.com/no-plagiarism/pymorphy3',
 
-    description='Morphological analyzer (POS tagger + inflection engine) for Russian language.',
+    description='Morphological analyzer (POS tagger + inflection engine) for Russian and Ukrainian languages.',
     long_description=open('README.md').read(),
 
     license='MIT license',
@@ -44,6 +44,7 @@ setup(
     },
     install_requires=install_requires,
     extras_require=extras_require,
+    package_data={'pymorphy3': ['py.typed']},
     zip_safe=False,
 
     classifiers=[
@@ -52,6 +53,7 @@ setup(
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: Russian',
+        'Natural Language :: Ukrainian',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.9',

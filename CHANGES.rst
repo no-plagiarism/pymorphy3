@@ -1,6 +1,28 @@
 
 History of Changes / История изменений
 ======================================
+UNRELEASED
+----------
+- Fix ``pymorphy dict mem_usage`` command: actually load the dictionary
+  before measuring memory usage and load time
+- Add Ukrainian language to package metadata and docstrings
+- Ship ``py.typed`` marker so type checkers can use the annotations
+
+2.0.6 (2025-10-09)
+------------------
+- Python 3.14 support
+
+2.0.5 (2025-10-03)
+------------------
+- Remove deprecated function of restore_word_case
+- Clean up codebase and tests
+- Fix tests for command lines
+
+2.0.4 (2025-06-06)
+------------------
+- Simplify the use of psutil
+- Update README
+
 2.0.3 (2025-02-19)
 ------------------
 - Enable "fast" extras for Python > 3.9 and add tests

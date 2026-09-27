@@ -162,7 +162,7 @@ class _Unit(NamedTuple):
 
 class MorphAnalyzer:
     """
-    Morphological analyzer for Russian language.
+    Morphological analyzer for Russian and Ukrainian languages.
 
     For a given word it can find all possible inflectional paradigms
     and thus compute all possible tags and normal forms.
@@ -176,8 +176,9 @@ class MorphAnalyzer:
         >>> import pymorphy3
         >>> morph = pymorphy3.MorphAnalyzer()
 
-    MorphAnalyzer uses dictionaries from ``pymorphy2-dicts`` package
-    (which can be installed via ``pip install pymorphy2-dicts``).
+    MorphAnalyzer uses dictionaries from ``pymorphy3-dicts-*`` packages
+    (which can be installed via ``pip install pymorphy3-dicts-ru``
+    or ``pip install pymorphy3-dicts-uk``).
 
     Alternatively (e.g. if you have your own precompiled dictionaries),
     either create ``PYMORPHY2_DICT_PATH`` environment variable

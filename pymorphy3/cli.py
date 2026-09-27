@@ -56,7 +56,7 @@ logger = logging.getLogger('pymorphy3')
 @click.version_option(version=pymorphy3.__version__, message='%(version)s')
 def main(argv=None):
     """
-    pymorphy3 is a morphological analyzer / inflection engine for Russian language.
+    pymorphy3 is a morphological analyzer / inflection engine for Russian and Ukrainian languages.
     """
 
 @main.command(name='parse', context_settings={'show_default': True})
@@ -131,6 +131,8 @@ def show_dict_mem_usage(lang, dict_path=None, verbose=False):
     """
     initial_mem = get_mem_usage()
     initial_time = time.time()
+
+    pymorphy3.MorphAnalyzer(path=dict_path, lang=lang)
 
     end_time = time.time()
     mem_usage = get_mem_usage()
