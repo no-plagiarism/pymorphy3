@@ -4,29 +4,29 @@ API Reference (auto-generated)
 Morphological Analyzer
 ----------------------
 
-.. automodule:: pymorphy2.analyzer
+.. automodule:: pymorphy3.analyzer
     :members:
     :undoc-members:
 
 Analyzer units
 ~~~~~~~~~~~~~~
 
-.. automodule:: pymorphy2.units.by_lookup
+.. automodule:: pymorphy3.units.by_lookup
     :members:
 
-.. automodule:: pymorphy2.units.by_analogy
+.. automodule:: pymorphy3.units.by_analogy
     :members:
 
-.. automodule:: pymorphy2.units.by_hyphen
+.. automodule:: pymorphy3.units.by_hyphen
     :members:
 
-.. automodule:: pymorphy2.units.by_shape
+.. automodule:: pymorphy3.units.by_shape
     :members:
 
 Tagset
 ------
 
-.. automodule:: pymorphy2.tagset
+.. automodule:: pymorphy3.tagset
     :members: OpencorporaTag
 
 .. _cli:
@@ -34,22 +34,22 @@ Tagset
 Command-Line Interface
 ----------------------
 
-.. automodule:: pymorphy2.cli
+.. automodule:: pymorphy3.cli
 
 Utilities for OpenCorpora Dictionaries
 --------------------------------------
 
-.. automodule:: pymorphy2.opencorpora_dict.wrapper
+.. automodule:: pymorphy3.opencorpora_dict.wrapper
     :members:
 
 Various Utilities
 -----------------
 
-.. automodule:: pymorphy2.tokenizers
+.. automodule:: pymorphy3.tokenizers
     :members:
 
-.. automodule:: pymorphy2.shapes
+.. automodule:: pymorphy3.shapes
     :members:
 
-.. automodule:: pymorphy2.utils
+.. automodule:: pymorphy3.utils
     :members:
